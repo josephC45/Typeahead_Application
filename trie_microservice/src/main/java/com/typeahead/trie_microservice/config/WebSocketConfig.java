@@ -1,13 +1,13 @@
-package com.typeahead.trie_microservice.typeahead_trie.config;
+package com.typeahead.trie_microservice.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
-import com.typeahead.trie_microservice.typeahead_trie.handler.MyWebsocketHandler;
-import com.typeahead.trie_microservice.typeahead_trie.pojo.Trie;
-import com.typeahead.trie_microservice.typeahead_trie.service.KafkaProducer;
+import com.typeahead.trie_microservice.handler.MyWebsocketHandler;
+import com.typeahead.trie_microservice.pojo.Trie;
+import com.typeahead.trie_microservice.service.KafkaProducer;
 
 @Configuration
 @EnableWebSocket

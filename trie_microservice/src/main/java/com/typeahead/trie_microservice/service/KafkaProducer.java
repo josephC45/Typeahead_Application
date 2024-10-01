@@ -1,4 +1,4 @@
-package com.typeahead.trie_microservice.typeahead_trie.service;
+package com.typeahead.trie_microservice.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;

@@ -1,11 +1,11 @@
-package com.typeahead.trie_microservice.typeahead_trie.handler;
+package com.typeahead.trie_microservice.handler;
 
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import com.typeahead.trie_microservice.typeahead_trie.pojo.Trie;
-import com.typeahead.trie_microservice.typeahead_trie.service.KafkaProducer;
+import com.typeahead.trie_microservice.pojo.Trie;
+import com.typeahead.trie_microservice.service.KafkaProducer;
 
 public class MyWebsocketHandler extends TextWebSocketHandler {
 

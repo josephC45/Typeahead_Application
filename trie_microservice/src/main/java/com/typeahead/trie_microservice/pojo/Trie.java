@@ -1,4 +1,4 @@
-package com.typeahead.trie_microservice.typeahead_trie.pojo;
+package com.typeahead.trie_microservice.pojo;
 
 import org.springframework.stereotype.Component;
 

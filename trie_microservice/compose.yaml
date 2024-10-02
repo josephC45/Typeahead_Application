@@ -1,1 +1,13 @@
 services:
+  # Zookeeper service needed
+  # Kafka service needed
+  typeahead-app:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - kafka
+    networks:
+      - typea
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafak:9092

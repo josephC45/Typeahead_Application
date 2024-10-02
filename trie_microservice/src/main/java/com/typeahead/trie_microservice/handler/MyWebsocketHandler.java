@@ -22,9 +22,9 @@ public class MyWebsocketHandler extends TextWebSocketHandler {
         else {
             System.out.println("Querying trie with prefix: " + textMessage.getPayload());
             prefix.append(textMessage.getPayload());
+            trie.getPrefix(prefix.toString());
         }
-        trie.getPrefix(prefix.toString());
-        //Idea to send prefix via kafka streaming which is ingested by spark (due to use in microbatches)
+        //Idea to send prefix via kafka which will then be ingested by spark (microbatching)
         kafkaProducer.sendPrefix(prefix.toString());
     }
 }

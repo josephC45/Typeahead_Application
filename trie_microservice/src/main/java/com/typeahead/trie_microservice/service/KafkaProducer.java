@@ -11,6 +11,6 @@ public class KafkaProducer {
     private KafkaTemplate<String,String> kafkaTemplate;
 
     public void sendPrefix(String prefix){
-        kafkaTemplate.send("typed-prefixes", prefix);
+        kafkaTemplate.sendDefault(prefix);
     }
 }

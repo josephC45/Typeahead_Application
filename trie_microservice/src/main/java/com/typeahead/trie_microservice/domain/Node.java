@@ -1,4 +1,4 @@
-package com.typeahead.trie_microservice.pojo;
+package com.typeahead.trie_microservice.domain;
 
 import java.util.ArrayList;
 import java.util.HashMap;

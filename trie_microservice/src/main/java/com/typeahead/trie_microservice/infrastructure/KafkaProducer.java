@@ -1,11 +1,11 @@
-package com.typeahead.trie_microservice.service;
+package com.typeahead.trie_microservice.infrastructure;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
-public class KafkaProducer {
+@Component
+public class KafkaProducer implements KafkaInterface {
 
     @Autowired
     private KafkaTemplate<String,String> kafkaTemplate;

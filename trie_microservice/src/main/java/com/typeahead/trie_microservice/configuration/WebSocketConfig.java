@@ -14,16 +14,16 @@ import com.typeahead.trie_microservice.websocket.TrieWebsocketHandler;
 public class WebSocketConfig implements WebSocketConfigurer{
 
     private TrieService trieService;
-    private KafkaProducerService kafkaService;
+    private KafkaProducerService kafkaProducerService;
 
-    public WebSocketConfig(TrieService trieService, KafkaProducerService kafkaService){
+    public WebSocketConfig(TrieService trieService, KafkaProducerService kafkaProducerService){
         this.trieService = trieService;
-        this.kafkaService = kafkaService;
+        this.kafkaProducerService = kafkaProducerService;
     }
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(new TrieWebsocketHandler(trieService, kafkaService), "/ws").setAllowedOrigins("*");
+        registry.addHandler(new TrieWebsocketHandler(trieService, kafkaProducerService), "/ws").setAllowedOrigins("*");
     }
 
 }

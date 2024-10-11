@@ -9,7 +9,7 @@ import com.typeahead.trie_microservice.domain.TrieInterface;
 @Service
 public class TrieService {
 
-    private TrieInterface trie;
+    private final TrieInterface trie;
     
     public TrieService(TrieInterface trie){
         this.trie = trie;

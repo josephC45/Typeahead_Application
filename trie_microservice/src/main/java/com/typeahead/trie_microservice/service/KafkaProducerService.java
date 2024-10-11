@@ -7,7 +7,7 @@ import com.typeahead.trie_microservice.infrastructure.KafkaInterface;
 @Service
 public class KafkaProducerService {
 
-    private KafkaInterface kafkaProducer;
+    private final KafkaInterface kafkaProducer;
 
     public KafkaProducerService(KafkaInterface kafkaProducer){
         this.kafkaProducer = kafkaProducer;

@@ -2,7 +2,7 @@ import asyncio
 import websockets
 
 async def interact_with_websocket():
-    uri = 'ws://localhost:8080'
+    uri = 'ws://localhost:8080/ws'
     async with websockets.connect(uri) as websocket:
         while True:
             prefix = input("Type a prefix: ")

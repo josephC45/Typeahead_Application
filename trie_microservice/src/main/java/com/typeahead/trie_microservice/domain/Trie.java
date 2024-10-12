@@ -7,31 +7,31 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Trie implements TrieInterface {
-    
-    private final Node root; 
+
+    private final Node rootNode; 
 
     public Trie(){
-        root = new Node();
+        rootNode = new Node();
     }
 
     public List<String> getPrefix(String prefix){
-        Node curNode = root;
-        for(char curChar : prefix.toCharArray()){
-            if(!curNode.map.containsKey(curChar)) return Collections.emptyList();
-            else curNode = curNode.map.get(curChar);
+        Node currentNode = rootNode;
+        for(char currentCharacter : prefix.toCharArray()){
+            if(!currentNode.map.containsKey(currentCharacter)) return Collections.emptyList();
+            else currentNode = currentNode.map.get(currentCharacter);
         }
-        return (curNode.mostPopularWordsWithPrefix != null) ? curNode.mostPopularWordsWithPrefix : Collections.emptyList();
+        return (currentNode.mostPopularWordsWithPrefix != null) ? currentNode.mostPopularWordsWithPrefix : Collections.emptyList();
     }
 
     public void addPrefix(String prefix){
-        Node curNode = root;
-        for(char curChar : prefix.toCharArray()){
-            if(!curNode.map.containsKey(curChar)){
-                curNode.mostPopularWordsWithPrefix.add(prefix);
-                curNode.map.put(curChar, new Node());
+        Node currentNode = rootNode;
+        for(char currentCharacter : prefix.toCharArray()){
+            if(!currentNode.map.containsKey(currentCharacter)){
+                currentNode.mostPopularWordsWithPrefix.add(prefix);
+                currentNode.map.put(currentCharacter, new Node());
             }
-            curNode = curNode.map.get(curChar);
+            currentNode = currentNode.map.get(currentCharacter);
         }
-        curNode.isEndOfWord = true;
+        currentNode.isEndOfWord = true;
     }
 }

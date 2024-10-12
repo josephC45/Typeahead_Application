@@ -16,7 +16,7 @@ public class TrieService {
     }
 
     public List<String> getPopularPrefixes(String prefix){
-        return trie.getPrefix(prefix);
+        return trie.getPrefixes(prefix);
     }
 
     public void addCurPrefix(String prefix){

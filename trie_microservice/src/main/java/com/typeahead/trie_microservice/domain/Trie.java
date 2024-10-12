@@ -14,7 +14,7 @@ public class Trie implements TrieInterface {
         rootNode = new Node();
     }
 
-    public List<String> getPrefix(String prefix){
+    public List<String> getPrefixes(String prefix){
         Node currentNode = rootNode;
         for(char currentCharacter : prefix.toCharArray()){
             if(!currentNode.map.containsKey(currentCharacter)) return Collections.emptyList();

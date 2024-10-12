@@ -17,21 +17,20 @@ public class Trie implements TrieInterface {
     public List<String> getPrefixes(String prefix){
         Node currentNode = rootNode;
         for(char currentCharacter : prefix.toCharArray()){
-            if(!currentNode.map.containsKey(currentCharacter)) return Collections.emptyList();
-            else currentNode = currentNode.map.get(currentCharacter);
+            currentNode = currentNode.getChildren().get(currentCharacter);
+            if(currentNode == null) return Collections.emptyList();
         }
-        return (currentNode.mostPopularWordsWithPrefix != null) ? currentNode.mostPopularWordsWithPrefix : Collections.emptyList();
+        return (currentNode.getMostPopularWordsWithPrefix() != null)
+        ? currentNode.getMostPopularWordsWithPrefix() 
+        : Collections.emptyList();
     }
 
     public void addPrefix(String prefix){
         Node currentNode = rootNode;
         for(char currentCharacter : prefix.toCharArray()){
-            if(!currentNode.map.containsKey(currentCharacter)){
-                currentNode.mostPopularWordsWithPrefix.add(prefix);
-                currentNode.map.put(currentCharacter, new Node());
-            }
-            currentNode = currentNode.map.get(currentCharacter);
+            currentNode = currentNode.addChildIfAbsent(currentCharacter);
+            currentNode.addToPopularWords(prefix);
         }
-        currentNode.isEndOfWord = true;
+        currentNode.setEndOfWord(true);
     }
 }

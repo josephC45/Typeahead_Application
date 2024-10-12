@@ -7,13 +7,38 @@ import java.util.Map;
 
 public class Node {
 
-    List<String> mostPopularWordsWithPrefix;
-    boolean isEndOfWord;
-    Map<Character,Node> map;
+    private final List<String> mostPopularWordsWithPrefix;
+    private final Map<Character,Node> children;
+    private boolean isEndOfWord;
 
     public Node(){
         this.isEndOfWord = false;
-        this.map = new HashMap<>();
+        this.children = new HashMap<>();
         this.mostPopularWordsWithPrefix = new ArrayList<>();
     }
+
+    List<String> getMostPopularWordsWithPrefix() {
+        return mostPopularWordsWithPrefix;
+    }
+
+    void addToPopularWords(String prefix) {
+        this.mostPopularWordsWithPrefix.add(prefix);
+    }
+
+    boolean isEndOfWord() {
+        return isEndOfWord;
+    }
+
+    void setEndOfWord(boolean isEndOfWord) {
+        this.isEndOfWord = isEndOfWord;
+    }
+
+    Map<Character, Node> getChildren() {
+        return children;
+    }
+
+    Node addChildIfAbsent(char character){
+        return children.computeIfAbsent(character, c -> new Node());
+    }
+
 }

@@ -6,8 +6,9 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Trie implements TrieInterface{
-    public Node root; 
+public class Trie implements TrieInterface {
+    
+    private final Node root; 
 
     public Trie(){
         root = new Node();

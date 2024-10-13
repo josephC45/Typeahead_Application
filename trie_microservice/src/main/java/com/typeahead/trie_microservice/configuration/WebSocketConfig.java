@@ -11,14 +11,16 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 public class WebSocketConfig implements WebSocketConfigurer{
 
     private final WebSocketHandler trieWebsocketHandler;
+    private final WebSocketProperties webSocketProperties;
 
-    public WebSocketConfig(WebSocketHandler trieWebsocketHandler){
+    public WebSocketConfig(WebSocketHandler trieWebsocketHandler, WebSocketProperties webSocketProperties){
         this.trieWebsocketHandler = trieWebsocketHandler;
+        this.webSocketProperties = webSocketProperties;
     }
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(trieWebsocketHandler, "/ws").setAllowedOrigins("http://localhost:8080");
+        registry.addHandler(trieWebsocketHandler, webSocketProperties.getHandlerPath()).setAllowedOrigins(webSocketProperties.getHandlerOrigins());
     }
 
 }

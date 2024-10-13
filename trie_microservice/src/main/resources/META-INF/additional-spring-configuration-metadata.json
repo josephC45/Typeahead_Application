@@ -1,0 +1,12 @@
+{"properties": [
+  {
+    "name": "websockethandler.handlerPath",
+    "type": "java.lang.String",
+    "description": "A description for 'websockethandler.handlerPath'"
+  },
+  {
+    "name": "websockethandler.handlerOrigins",
+    "type": "java.lang.String",
+    "description": "A description for 'websockethandler.handlerOrigins'"
+  }
+]}

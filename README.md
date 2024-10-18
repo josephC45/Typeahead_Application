@@ -4,11 +4,11 @@
 The Typeahead Application is a scalable and efficient system that provides real-time suggestions as users type. It utilizes a Trie data structure to store and query popular prefixes, supporting continuous updates and processing of typed input. The application is built using Spring Boot, Apache Kafka, Spark, and Hadoop HDFS with Docker for containerization.
 
 ## Features
-Real-Time Suggestions: Provides suggestions as users type, utilizing a WebSocket connection for low-latency responses.
-Popular Prefix Aggregation: Updates the Trie every 24hrs based on the most popular prefixes in HDFS, aggregating counts via Spark.
-Scalable Architecture: Leverages microservices architecture with separate services for typeahead suggestions and stream processing.
-Distributed Processing: Uses Kafka for message passing and Spark for processing typed input in micro-batches.
-Dockerized Deployment: Containerized services for easy deployment and scaling.
+- Real-Time Suggestions: Provides suggestions as users type, utilizing a WebSocket connection for low-latency responses.
+- Popular Prefix Aggregation: Updates the Trie every 24hrs based on the most popular prefixes in HDFS, aggregating counts via Spark.
+- Scalable Architecture: Leverages microservices architecture with separate services for typeahead suggestions and stream processing.
+- Distributed Processing: Uses Kafka for message passing and Spark for processing typed input in micro-batches.
+- Dockerized Deployment: Containerized services for easy deployment and scaling.
 
 ## Architecture
 The application follows a microservices architecture, with the following components:

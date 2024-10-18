@@ -22,7 +22,7 @@ public class TrieServiceTests {
     private TrieInterface trieMock;
 
     @InjectMocks
-    private TrieService trieService;
+    private TrieServiceImpl trieService;
 
     @Test
     public void givenExistingTrie_whenPopularPrefixesIsCalled_shouldCallGetPrefixesOnTrie() {
@@ -40,7 +40,7 @@ public class TrieServiceTests {
     public void givenPrefix_whenAddedToTrie_shouldCallAddPrefixOnTrie() {
         String prefix = "hello";
         
-        trieService.addCurPrefix(prefix);
+        trieService.addCurrentPrefix(prefix);
         verify(trieMock).addPrefix(prefix);
     }
 }

@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.typeahead.trie_microservice.service.TrieService;
+import com.typeahead.trie_microservice.service.TrieServiceImpl;
 
 public class TrieIntegrationTest {
 
@@ -14,10 +14,10 @@ public class TrieIntegrationTest {
     void givenPrefix_whenAdded_shouldReturnMatchingPrefixes(){
 
         Trie trie = new Trie();
-        TrieService trieService = new TrieService(trie);
+        TrieServiceImpl trieService = new TrieServiceImpl(trie);
 
         String expected = "hello";
-        trieService.addCurPrefix(expected);
+        trieService.addCurrentPrefix(expected);
         List<String> actual = trieService.getPopularPrefixes(expected);
         assertTrue(actual.contains(expected));
     }

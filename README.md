@@ -32,11 +32,11 @@ All components are containerized to simplify deployment and scaling.
 Supports running multiple instances of each service to handle increased load.
 
 ## Technologies Used
-Spring/Spring Boot: Backend framework for building REST APIs and WebSockets.
-Apache Kafka: Message broker for reliable message passing.
-Apache Spark: Stream processing for aggregating typed prefixes.
-Trie Data Structure: Efficient data structure for prefix searching.
-Hadoop HDFS: Storage for popular prefix data.
-Docker: Containerization for scalable deployment.
-JUnit/Mockito: Testing framework for unit and integration tests.
-Python: Script used for establishing websocket connection via CLI.
+- Spring/Spring Boot: Backend framework for building REST APIs and WebSockets.
+- Apache Kafka: Message broker for reliable message passing.
+- Apache Spark: Stream processing for aggregating typed prefixes.
+- Trie Data Structure: Efficient data structure for prefix searching.
+- Hadoop HDFS: Storage for popular prefix data.
+- Docker: Containerization for scalable deployment.
+- JUnit/Mockito: Testing framework for unit and integration tests.
+- Python: Script used for establishing websocket connection via CLI.

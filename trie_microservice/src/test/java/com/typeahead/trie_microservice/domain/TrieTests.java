@@ -6,25 +6,32 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class TrieTests {
 
+    private Trie trie;
+
+    @BeforeEach()
+    public void setup() {
+        trie = new Trie();
+    }
+
     @Test
     public void givenPrefix_whenAdded_shouldReturnMatchingPrefixes() {
-        Trie trie = new Trie();
         trie.addPrefix("hello");
 
         List<String> prefixesWithH = trie.getPrefixes("h");
         List<String> prefixesWithT = trie.getPrefixes("testing");
 
+        assertEquals(1, prefixesWithH.size());
         assertTrue(prefixesWithH.contains("hello"));
         assertEquals(0, prefixesWithT.size());
     }
 
     @Test
     public void givenTrieWithPrefixes_whenGetPrefixesIsCalled_shouldReturnMatchingPrefixes() {
-        Trie trie = new Trie();
         trie.addPrefix("don't");
         trie.addPrefix("dunk");
         trie.addPrefix("donut");

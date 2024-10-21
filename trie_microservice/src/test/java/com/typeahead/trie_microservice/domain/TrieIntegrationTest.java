@@ -1,5 +1,6 @@
 package com.typeahead.trie_microservice.domain;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -19,6 +20,8 @@ public class TrieIntegrationTest {
         String expected = "hello";
         trieService.addCurrentPrefix(expected);
         List<String> actual = trieService.getPopularPrefixes(expected);
+
+        assertEquals(1, actual.size());
         assertTrue(actual.contains(expected));
     }
 }

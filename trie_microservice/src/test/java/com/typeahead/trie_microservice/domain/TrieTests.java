@@ -14,10 +14,12 @@ public class TrieTests {
     public void givenPrefix_whenAdded_shouldReturnMatchingPrefixes() {
         Trie trie = new Trie();
         trie.addPrefix("hello");
-        List<String> result = trie.getPrefixes("h");
 
-        assertTrue(result.contains("hello"));
-        assertTrue(trie.getPrefixes("testing").isEmpty());
+        List<String> prefixesWithH = trie.getPrefixes("h");
+        List<String> prefixesWithT = trie.getPrefixes("testing");
+
+        assertTrue(prefixesWithH.contains("hello"));
+        assertEquals(0, prefixesWithT.size());
     }
 
     @Test

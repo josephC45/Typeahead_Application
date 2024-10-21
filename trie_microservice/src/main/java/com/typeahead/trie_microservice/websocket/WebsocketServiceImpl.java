@@ -24,7 +24,7 @@ public class WebsocketServiceImpl implements WebsocketService {
 
     @Override
     public boolean isEndOfWord(String currentPrefix){
-        return currentPrefix.matches("[^A-Za-z]");
+        return currentPrefix.matches("[^A-Za-z']");
     }
 
     @Override

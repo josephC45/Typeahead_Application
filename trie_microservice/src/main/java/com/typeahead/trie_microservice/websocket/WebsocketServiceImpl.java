@@ -40,15 +40,16 @@ public class WebsocketServiceImpl implements WebsocketService {
     public void queryTrie(WebSocketSession session, String currentPrefix){
         //Idea to send prefix via kafka which will then be ingested by spark (microbatching)
         if(!isEndOfWord(currentPrefix)) {
-            System.out.println("Querying trie with prefix: " + currentPrefix);
-            List<String> popularAssociatedWordsWithPrefix = trieService.getPopularPrefixes(currentPrefix);
+            wordTyped.append(currentPrefix);
+            String curWordTyped = wordTyped.toString();
+            System.out.println("Querying trie with prefix: " + curWordTyped);
+            List<String> popularAssociatedWordsWithPrefix = trieService.getPopularPrefixes(curWordTyped);
 
             TextMessage response = (popularAssociatedWordsWithPrefix.isEmpty())
                 ? new TextMessage("No popular prefixes") 
                 : new TextMessage(String.join(",", popularAssociatedWordsWithPrefix));
 
             sendResponseToClient(session, response);
-            wordTyped.append(currentPrefix);
         }else{
             kafkaService.sendMessageToKafka(wordTyped.toString());
             wordTyped.setLength(0);

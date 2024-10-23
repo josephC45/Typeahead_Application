@@ -3,6 +3,8 @@ package com.typeahead.trie_microservice.websocket;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -16,6 +18,7 @@ public class WebsocketServiceImpl implements WebsocketService {
     private final TrieService trieService;
     private final KafkaProducerService kafkaService;
     private final StringBuilder wordTyped = new StringBuilder();
+    private static final Logger logger = LogManager.getLogger(WebsocketServiceImpl.class);
 
     public WebsocketServiceImpl(TrieService trieService, KafkaProducerService kafkaService){
         this.trieService = trieService;
@@ -31,8 +34,9 @@ public class WebsocketServiceImpl implements WebsocketService {
     public void sendResponseToClient(WebSocketSession session, TextMessage response){
         try {
             session.sendMessage(response);
+            logger.info("Response sent to client.");
         } catch (IOException e) {
-            System.err.println("Failed to send to websocket client: " + e.getMessage());
+            logger.error("Failed to send to websocket client: " + e.getMessage());
         }
     }
 
@@ -42,7 +46,7 @@ public class WebsocketServiceImpl implements WebsocketService {
         if(!isEndOfWord(currentPrefix)) {
             wordTyped.append(currentPrefix);
             String curWordTyped = wordTyped.toString();
-            System.out.println("Querying trie with prefix: " + curWordTyped);
+            logger.info("Querying trie with prefix: " + curWordTyped);
             List<String> popularAssociatedWordsWithPrefix = trieService.getPopularPrefixes(curWordTyped);
 
             TextMessage response = (popularAssociatedWordsWithPrefix.isEmpty())
@@ -51,6 +55,7 @@ public class WebsocketServiceImpl implements WebsocketService {
 
             sendResponseToClient(session, response);
         }else{
+            logger.info("End of word character reached. Sending to Kafka...");
             kafkaService.sendMessageToKafka(wordTyped.toString());
             wordTyped.setLength(0);
         }

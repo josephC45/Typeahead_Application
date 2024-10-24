@@ -11,7 +11,7 @@ import org.springframework.web.socket.WebSocketSession;
 
 import com.typeahead.trie_microservice.domain.TrieService;
 import com.typeahead.trie_microservice.infrastructure.KafkaProducerService;
-import com.typeahead.trie_microservice.exception.TrieRuntimeException;
+import com.typeahead.trie_microservice.exception.KafkaRuntimeException;
 
 @Service
 public class WebsocketServiceImpl implements WebsocketService {
@@ -37,7 +37,7 @@ public class WebsocketServiceImpl implements WebsocketService {
             session.sendMessage(response);
             logger.info("Response sent to client.");
         } catch (IOException e) {
-            logger.error("Failed to send to websocket client: " + e.getMessage());
+            logger.error("Failed to send to websocket client: " + e.getMessage(), e);
         }
     }
 
@@ -62,9 +62,10 @@ public class WebsocketServiceImpl implements WebsocketService {
                 kafkaService.sendMessageToKafka(wordTyped.toString());
                 wordTyped.setLength(0);
             }
-        } catch (TrieRuntimeException e) {
-            logger.error("Error querying Trie: {}", e.getMessage(), e);
-            sendResponseToClient(session, new TextMessage("Error retrieving popular prefixes."));
+
+        } catch (KafkaRuntimeException e){
+            logger.error("Error sending prefix to Kafka: {}", e.getMessage(), e);
+            sendResponseToClient(session, new TextMessage("Error sending data to Kafka."));
         }
     }
 

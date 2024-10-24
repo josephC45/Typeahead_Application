@@ -11,6 +11,7 @@ import org.springframework.web.socket.WebSocketSession;
 
 import com.typeahead.trie_microservice.domain.TrieService;
 import com.typeahead.trie_microservice.infrastructure.KafkaProducerService;
+import com.typeahead.trie_microservice.exception.TrieRuntimeException;
 
 @Service
 public class WebsocketServiceImpl implements WebsocketService {
@@ -43,21 +44,27 @@ public class WebsocketServiceImpl implements WebsocketService {
     @Override
     public void queryTrie(WebSocketSession session, String currentPrefix){
         //Idea to send prefix via kafka which will then be ingested by spark (microbatching)
-        if(!isEndOfWord(currentPrefix)) {
-            wordTyped.append(currentPrefix);
-            String curWordTyped = wordTyped.toString();
-            logger.info("Querying trie with prefix: " + curWordTyped);
-            List<String> popularAssociatedWordsWithPrefix = trieService.getPopularPrefixes(curWordTyped);
+        try {
+            if(!isEndOfWord(currentPrefix)) {
+                wordTyped.append(currentPrefix);
+                String curWordTyped = wordTyped.toString();
+                logger.info("Querying trie with prefix: " + curWordTyped);
+                List<String> popularAssociatedWordsWithPrefix = trieService.getPopularPrefixes(curWordTyped);
 
-            TextMessage response = (popularAssociatedWordsWithPrefix.isEmpty())
-                ? new TextMessage("No popular prefixes") 
-                : new TextMessage(String.join(",", popularAssociatedWordsWithPrefix));
+                TextMessage response = (popularAssociatedWordsWithPrefix.isEmpty())
+                    ? new TextMessage("No popular prefixes") 
+                    : new TextMessage(String.join(",", popularAssociatedWordsWithPrefix));
 
-            sendResponseToClient(session, response);
-        }else{
-            logger.info("End of word character reached. Sending to Kafka...");
-            kafkaService.sendMessageToKafka(wordTyped.toString());
-            wordTyped.setLength(0);
+                sendResponseToClient(session, response);
+            }else{
+                logger.info("End of word character reached. Sending to Kafka...");
+                kafkaService.sendMessageToKafka(wordTyped.toString());
+                wordTyped.setLength(0);
+            }
+        }
+        catch(TrieRuntimeException e){
+            logger.error("Error querying Trie: {}", e.getMessage(), e);
+            sendResponseToClient(session, new TextMessage("Error retrieving popular prefixes."));
         }
     }
     

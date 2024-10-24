@@ -28,9 +28,9 @@ public class TrieServiceTests {
     public void givenExistingTrie_whenPopularPrefixesIsCalled_shouldCallGetPrefixesOnTrie() {
         String prefix = "h";
         List<String> expectedPrefixes = Arrays.asList("hello", "hey");
-        
+
         when(trieMock.getPrefixes(prefix)).thenReturn(expectedPrefixes);
-        
+
         List<String> result = trieService.getPopularPrefixes(prefix);
         assertEquals(expectedPrefixes, result);
         verify(trieMock).getPrefixes(prefix);
@@ -39,7 +39,7 @@ public class TrieServiceTests {
     @Test
     public void givenPrefix_whenAddedToTrie_shouldCallAddPrefixOnTrie() {
         String prefix = "hello";
-        
+
         trieService.addCurrentPrefix(prefix);
         verify(trieMock).addPrefix(prefix);
     }

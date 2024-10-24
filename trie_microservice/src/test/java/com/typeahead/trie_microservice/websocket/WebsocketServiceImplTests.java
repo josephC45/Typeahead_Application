@@ -40,7 +40,7 @@ public class WebsocketServiceImplTests {
     private StringBuilder wordTyped;
 
     @BeforeEach()
-    public void setup(){
+    public void setup() {
         wordTyped = new StringBuilder();
     }
 
@@ -64,15 +64,15 @@ public class WebsocketServiceImplTests {
     }
 
     @Test
-    void whenEndOfWordCharacterIsTyped_shouldSendWordToKafka() throws Exception{
+    void whenEndOfWordCharacterIsTyped_shouldSendWordToKafka() throws Exception {
         websocketService.queryTrie(session, "t");
         websocketService.queryTrie(session, "e");
         websocketService.queryTrie(session, "s");
         websocketService.queryTrie(session, "t");
-        
+
         // Simulate pressing a space (end of word)
         websocketService.queryTrie(session, " ");
-        
+
         verify(kafkaService).sendMessageToKafka("test");
         assertEquals(0, wordTyped.length());
     }

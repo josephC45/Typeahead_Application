@@ -12,7 +12,7 @@ import com.typeahead.trie_microservice.service.TrieServiceImpl;
 public class TrieIntegrationTest {
 
     @Test
-    void givenPrefix_whenAdded_shouldReturnMatchingPrefixes(){
+    void givenPrefix_whenAdded_shouldReturnMatchingPrefixes() {
 
         Trie trie = new Trie();
         TrieServiceImpl trieService = new TrieServiceImpl(trie);

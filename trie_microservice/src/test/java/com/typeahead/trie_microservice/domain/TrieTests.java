@@ -43,7 +43,7 @@ public class TrieTests {
 
         assertEquals(3, prefixesWithD.size());
         assertTrue(prefixesWithD.containsAll(List.of("don't", "donut")));
-        
+
         assertEquals(1, prefixesWithDont.size());
         assertTrue(prefixesWithDont.contains("don't"));
 

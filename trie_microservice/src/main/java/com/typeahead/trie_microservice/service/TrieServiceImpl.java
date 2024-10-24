@@ -12,17 +12,17 @@ public class TrieServiceImpl implements TrieService {
 
     private TrieInterface trie;
 
-    public TrieServiceImpl(TrieInterface trie){
+    public TrieServiceImpl(TrieInterface trie) {
         this.trie = trie;
     }
-    
+
     @Override
     public List<String> getPopularPrefixes(String prefix) {
         return trie.getPrefixes(prefix);
     }
 
     @Override
-    public void addCurrentPrefix(String prefix){
+    public void addCurrentPrefix(String prefix) {
         trie.addPrefix(prefix);
     }
 

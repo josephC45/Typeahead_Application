@@ -21,18 +21,18 @@ public class WebsocketServiceImpl implements WebsocketService {
     private final StringBuilder wordTyped = new StringBuilder();
     private static final Logger logger = LogManager.getLogger(WebsocketServiceImpl.class);
 
-    public WebsocketServiceImpl(TrieService trieService, KafkaProducerService kafkaService){
+    public WebsocketServiceImpl(TrieService trieService, KafkaProducerService kafkaService) {
         this.trieService = trieService;
         this.kafkaService = kafkaService;
     }
 
     @Override
-    public boolean isEndOfWord(String currentPrefix){
+    public boolean isEndOfWord(String currentPrefix) {
         return currentPrefix.matches("[^A-Za-z']");
     }
 
     @Override
-    public void sendResponseToClient(WebSocketSession session, TextMessage response){
+    public void sendResponseToClient(WebSocketSession session, TextMessage response) {
         try {
             session.sendMessage(response);
             logger.info("Response sent to client.");
@@ -42,30 +42,30 @@ public class WebsocketServiceImpl implements WebsocketService {
     }
 
     @Override
-    public void queryTrie(WebSocketSession session, String currentPrefix){
-        //Idea to send prefix via kafka which will then be ingested by spark (microbatching)
+    public void queryTrie(WebSocketSession session, String currentPrefix) {
+        // Idea to send prefix via kafka which will then be ingested by spark
+        // (microbatching)
         try {
-            if(!isEndOfWord(currentPrefix)) {
+            if (!isEndOfWord(currentPrefix)) {
                 wordTyped.append(currentPrefix);
                 String curWordTyped = wordTyped.toString();
                 logger.info("Querying trie with prefix: " + curWordTyped);
                 List<String> popularAssociatedWordsWithPrefix = trieService.getPopularPrefixes(curWordTyped);
 
                 TextMessage response = (popularAssociatedWordsWithPrefix.isEmpty())
-                    ? new TextMessage("No popular prefixes") 
-                    : new TextMessage(String.join(",", popularAssociatedWordsWithPrefix));
+                        ? new TextMessage("No popular prefixes")
+                        : new TextMessage(String.join(",", popularAssociatedWordsWithPrefix));
 
                 sendResponseToClient(session, response);
-            }else{
+            } else {
                 logger.info("End of word character reached. Sending to Kafka...");
                 kafkaService.sendMessageToKafka(wordTyped.toString());
                 wordTyped.setLength(0);
             }
-        }
-        catch(TrieRuntimeException e){
+        } catch (TrieRuntimeException e) {
             logger.error("Error querying Trie: {}", e.getMessage(), e);
             sendResponseToClient(session, new TextMessage("Error retrieving popular prefixes."));
         }
     }
-    
+
 }

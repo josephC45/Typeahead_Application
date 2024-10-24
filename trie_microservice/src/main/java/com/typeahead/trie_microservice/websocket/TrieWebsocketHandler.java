@@ -14,7 +14,7 @@ public class TrieWebsocketHandler extends TextWebSocketHandler {
     private final WebsocketService websocketService;
     private static final Logger logger = LogManager.getLogger(TrieWebsocketHandler.class);
 
-    public TrieWebsocketHandler(WebsocketService websocketService){
+    public TrieWebsocketHandler(WebsocketService websocketService) {
         this.websocketService = websocketService;
     }
 
@@ -34,7 +34,7 @@ public class TrieWebsocketHandler extends TextWebSocketHandler {
     }
 
     @Override
-    public void handleTextMessage(WebSocketSession session, TextMessage textMessage){
+    public void handleTextMessage(WebSocketSession session, TextMessage textMessage) {
         String currentPrefix = textMessage.getPayload();
         logger.info("Received message: " + currentPrefix + " from client: " + session.getId());
         websocketService.queryTrie(session, currentPrefix);

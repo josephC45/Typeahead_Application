@@ -8,10 +8,10 @@ import java.util.Map;
 public class Node {
 
     private final List<String> mostPopularWordsWithPrefix;
-    private final Map<Character,Node> children;
+    private final Map<Character, Node> children;
     private boolean isEndOfWord;
 
-    public Node(){
+    public Node() {
         this.isEndOfWord = false;
         this.children = new HashMap<>();
         this.mostPopularWordsWithPrefix = new ArrayList<>();
@@ -37,7 +37,7 @@ public class Node {
         return children;
     }
 
-    Node addChildIfAbsent(char character){
+    Node addChildIfAbsent(char character) {
         return children.computeIfAbsent(character, c -> new Node());
     }
 

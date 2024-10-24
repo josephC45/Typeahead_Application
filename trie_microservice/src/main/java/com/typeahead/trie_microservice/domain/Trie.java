@@ -20,11 +20,6 @@ public class Trie implements TrieInterface {
     }
 
     public List<String> getPrefixes(String prefix) {
-        if (prefix == null || prefix.isEmpty()) {
-            logger.warn("Attempted to get prefixes with a null or empty string.");
-            throw new TrieRuntimeException("Prefix cannot be null or empty.");
-        }
-
         Node currentNode = rootNode;
         for (char currentCharacter : prefix.toCharArray()) {
             currentNode = currentNode.getChildren().get(currentCharacter);
@@ -36,6 +31,7 @@ public class Trie implements TrieInterface {
                 : Collections.emptyList();
     }
 
+    //Error handling put in place is temporary until HBase or Hadoop HDFS is implemented and I determine how I need to handle it
     public void addPrefix(String prefix) {
         try {
             if (prefix == null || prefix.isEmpty()) {

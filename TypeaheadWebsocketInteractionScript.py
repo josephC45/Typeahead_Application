@@ -30,4 +30,5 @@ async def interact_with_websocket():
             receive_suggestions(websocket)
         )
 
-asyncio.run(interact_with_websocket())
+if __name__ == "__main__":
+    asyncio.run(interact_with_websocket())

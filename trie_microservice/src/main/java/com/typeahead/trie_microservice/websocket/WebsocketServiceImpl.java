@@ -43,8 +43,6 @@ public class WebsocketServiceImpl implements WebsocketService {
 
     @Override
     public void queryTrie(WebSocketSession session, String currentPrefix) {
-        // Idea to send prefix via kafka which will then be ingested by spark
-        // (microbatching)
         try {
             if (!isEndOfWord(currentPrefix)) {
                 wordTyped.append(currentPrefix);
@@ -68,5 +66,4 @@ public class WebsocketServiceImpl implements WebsocketService {
             sendResponseToClient(session, new TextMessage("Error sending data to Kafka."));
         }
     }
-
 }

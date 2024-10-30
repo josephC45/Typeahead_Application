@@ -47,7 +47,6 @@ public class WebsocketServiceImpl implements WebsocketService {
             if (!isEndOfWord(currentPrefix)) {
                 wordTyped.append(currentPrefix);
                 String curWordTyped = wordTyped.toString();
-                logger.info("Querying trie with prefix: " + curWordTyped);
                 List<String> popularAssociatedWordsWithPrefix = trieService.getPopularPrefixes(curWordTyped);
 
                 TextMessage response = (popularAssociatedWordsWithPrefix.isEmpty())

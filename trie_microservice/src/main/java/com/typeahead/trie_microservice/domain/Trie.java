@@ -13,10 +13,17 @@ import com.typeahead.trie_microservice.exception.TrieRuntimeException;
 public class Trie implements TrieInterface {
 
     private final Node rootNode;
-    private static final Logger logger = LogManager.getLogger(Trie.class);
+    private final Logger logger;
+
+    // For testing
+    public Trie(Logger logger) {
+        this.rootNode = new Node();
+        this.logger = logger;
+    }
 
     public Trie() {
-        rootNode = new Node();
+        this.rootNode = new Node();
+        this.logger = LogManager.getLogger(Trie.class);
     }
 
     public List<String> getPrefixes(String prefix) {
@@ -31,7 +38,8 @@ public class Trie implements TrieInterface {
                 : Collections.emptyList();
     }
 
-    //Error handling put in place is temporary until HBase or Hadoop HDFS is implemented and I determine how I need to handle it
+    // Error handling put in place is temporary until HBase or Hadoop HDFS is
+    // implemented and I determine how I need to handle it
     public void addPrefix(String prefix) {
         try {
             if (prefix == null || prefix.isEmpty()) {
@@ -46,7 +54,7 @@ public class Trie implements TrieInterface {
             currentNode.setEndOfWord(true);
 
         } catch (TrieRuntimeException e) {
-            logger.error("Error while adding prefixes: {}", e.getMessage(), e);
+            logger.error("Error while adding prefixes: {}", e.getMessage());
         }
     }
 }

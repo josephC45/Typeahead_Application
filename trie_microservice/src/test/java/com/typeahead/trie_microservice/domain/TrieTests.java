@@ -2,40 +2,48 @@ package com.typeahead.trie_microservice.domain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.eq;
 
 import java.util.List;
 
-import org.apache.logging.log4j.Logger;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 
-@ExtendWith(MockitoExtension.class)
+import com.typeahead.trie_microservice.exception.TrieRuntimeException;
+
 public class TrieTests {
 
-    @Mock
-    private Logger logger;
-
-    @InjectMocks
     private Trie trie;
+
+    @Autowired
+    private Trie trieSingleton2;
+
+    @Autowired
+    private Trie trieSingleton1;
+
+    @BeforeEach
+    public void setup() {
+        trie = new Trie();
+    }
+
+    @Test
+    public void testSingletonInstance() {
+        assertSame(trieSingleton1, trieSingleton2);
+    }
 
     @Test
     public void givenEmptyPrefix_whenAdded_shouldThrowTrieExceptionAndLog() {
-        trie.addPrefix("");
-
-        Mockito.verify(logger).error(eq("Error while adding prefixes: {}"), eq("Prefix cannot be null or empty."));
+        TrieRuntimeException exception = assertThrows(TrieRuntimeException.class, () -> trie.addPrefix(""));
+        assertEquals("Prefix cannot be null or empty.", exception.getMessage());
     }
 
     @Test
     public void givenNullPrefix_whenAdded_shouldThrowTrieExceptionAndLog() {
-        trie.addPrefix(null);
-
-        Mockito.verify(logger).error(eq("Error while adding prefixes: {}"), eq("Prefix cannot be null or empty."));
+        TrieRuntimeException exception = assertThrows(TrieRuntimeException.class, () -> trie.addPrefix(null));
+        assertEquals("Prefix cannot be null or empty.", exception.getMessage());
     }
 
     @Test

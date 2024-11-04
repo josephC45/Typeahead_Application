@@ -15,12 +15,6 @@ public class Trie implements TrieInterface {
     private final Node rootNode;
     private final Logger logger;
 
-    // For testing
-    public Trie(Logger logger) {
-        this.rootNode = new Node();
-        this.logger = logger;
-    }
-
     public Trie() {
         this.rootNode = new Node();
         this.logger = LogManager.getLogger(Trie.class);
@@ -38,7 +32,7 @@ public class Trie implements TrieInterface {
                 : Collections.emptyList();
     }
 
-    // Error handling put in place is temporary until HBase or Hadoop HDFS is
+    // Error handling put in place is temporary until HBase is
     // implemented and I determine how I need to handle it
     public void addPrefix(String prefix) {
         try {
@@ -55,6 +49,7 @@ public class Trie implements TrieInterface {
 
         } catch (TrieRuntimeException e) {
             logger.error("Error while adding prefixes: {}", e.getMessage());
+            throw e; //revisit how we are testing/handling this exception
         }
     }
 }

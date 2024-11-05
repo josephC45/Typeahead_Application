@@ -1,6 +1,8 @@
 import keyboard
 import pytest
-from unittest.mock import AsyncMock, patch 
+from unittest.mock import AsyncMock, patch
+
+from websockets.exceptions import ConnectionClosed
 from TypeaheadWebsocketInteractionScript import send_keyboard_input, receive_suggestions 
 
 @pytest.mark.asyncio
@@ -22,6 +24,16 @@ async def test_send_keyboard_input():
         mock_websocket.send.assert_any_call("b")
 
         assert mock_websocket.send.call_count == 2
+
+@pytest.mark.asyncio
+async def test_negative_receive_suggestions():
+    mock_websocket = AsyncMock()
+    mock_websocket.recv.side_effect = RuntimeError("Simulated connection closed")
+
+    with pytest.raises(RuntimeError) as exception:
+        await mock_websocket.recv()
+    
+    assert "Simulated connection closed" in str(exception.value)
 
 @pytest.mark.asyncio
 async def test_receive_suggestions():

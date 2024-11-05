@@ -11,7 +11,7 @@ import org.springframework.web.socket.WebSocketSession;
 
 import com.typeahead.trie_microservice.domain.TrieService;
 import com.typeahead.trie_microservice.infrastructure.KafkaProducerService;
-import com.typeahead.trie_microservice.exception.KafkaRuntimeException;
+import com.typeahead.trie_microservice.exception.KafkaException;
 
 @Service
 public class WebsocketServiceImpl implements WebsocketService {
@@ -60,7 +60,7 @@ public class WebsocketServiceImpl implements WebsocketService {
                 wordTyped.setLength(0);
             }
 
-        } catch (KafkaRuntimeException e){
+        } catch (KafkaException e){
             logger.error("Error sending prefix to Kafka: {}", e.getMessage(), e);
             sendResponseToClient(session, new TextMessage("Error sending data to Kafka."));
         }

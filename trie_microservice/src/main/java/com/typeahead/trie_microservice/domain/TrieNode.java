@@ -5,13 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Node {
+public class TrieNode {
 
     private final List<String> mostPopularWordsWithPrefix;
-    private final Map<Character, Node> children;
+    private final Map<Character, TrieNode> children;
     private boolean isEndOfWord;
 
-    public Node() {
+    public TrieNode() {
         this.isEndOfWord = false;
         this.children = new HashMap<>();
         this.mostPopularWordsWithPrefix = new ArrayList<>();
@@ -33,12 +33,12 @@ public class Node {
         this.isEndOfWord = isEndOfWord;
     }
 
-    Map<Character, Node> getChildren() {
+    Map<Character, TrieNode> getChildren() {
         return children;
     }
 
-    Node addChildIfAbsent(char character) {
-        return children.computeIfAbsent(character, c -> new Node());
+    TrieNode addChildIfAbsent(char character) {
+        return children.computeIfAbsent(character, c -> new TrieNode());
     }
 
 }

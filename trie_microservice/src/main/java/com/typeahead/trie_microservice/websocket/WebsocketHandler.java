@@ -9,12 +9,12 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 @Component
-public class TrieWebsocketHandler extends TextWebSocketHandler {
+public class WebsocketHandler extends TextWebSocketHandler {
 
     private final WebsocketService websocketService;
-    private static final Logger logger = LogManager.getLogger(TrieWebsocketHandler.class);
+    private static final Logger logger = LogManager.getLogger(WebsocketHandler.class);
 
-    public TrieWebsocketHandler(WebsocketService websocketService) {
+    public WebsocketHandler(WebsocketService websocketService) {
         this.websocketService = websocketService;
     }
 

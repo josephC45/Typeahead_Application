@@ -14,7 +14,7 @@ public class TrieIntegrationTest {
     @Test
     void givenPrefix_whenAdded_shouldReturnMatchingPrefixes() {
 
-        Trie trie = new Trie();
+        TrieImpl trie = new TrieImpl();
         TrieServiceImpl trieService = new TrieServiceImpl(trie);
 
         String expected = "hello";

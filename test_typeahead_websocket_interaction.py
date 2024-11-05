@@ -3,7 +3,7 @@ import pytest
 from unittest.mock import AsyncMock, patch
 
 from websockets.exceptions import ConnectionClosed
-from TypeaheadWebsocketInteractionScript import send_keyboard_input, receive_suggestions 
+from typeahead_websocket_interaction import send_keyboard_input, receive_suggestions 
 
 @pytest.mark.asyncio
 async def test_send_keyboard_input():

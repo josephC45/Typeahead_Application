@@ -12,21 +12,21 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.typeahead.trie_microservice.exception.TrieRuntimeException;
+import com.typeahead.trie_microservice.exception.TrieException;
 
 public class TrieTests {
 
-    private Trie trie;
+    private TrieImpl trie;
 
     @Autowired
-    private Trie trieSingleton2;
+    private TrieImpl trieSingleton2;
 
     @Autowired
-    private Trie trieSingleton1;
+    private TrieImpl trieSingleton1;
 
     @BeforeEach
     public void setup() {
-        trie = new Trie();
+        trie = new TrieImpl();
     }
 
     @Test
@@ -36,13 +36,13 @@ public class TrieTests {
 
     @Test
     public void givenEmptyPrefix_whenAdded_shouldThrowTrieExceptionAndLog() {
-        TrieRuntimeException exception = assertThrows(TrieRuntimeException.class, () -> trie.addPrefix(""));
+        TrieException exception = assertThrows(TrieException.class, () -> trie.addPrefix(""));
         assertEquals("Prefix cannot be null or empty.", exception.getMessage());
     }
 
     @Test
     public void givenNullPrefix_whenAdded_shouldThrowTrieExceptionAndLog() {
-        TrieRuntimeException exception = assertThrows(TrieRuntimeException.class, () -> trie.addPrefix(null));
+        TrieException exception = assertThrows(TrieException.class, () -> trie.addPrefix(null));
         assertEquals("Prefix cannot be null or empty.", exception.getMessage());
     }
 

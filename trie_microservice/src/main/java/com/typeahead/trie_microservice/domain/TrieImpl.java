@@ -7,21 +7,21 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import com.typeahead.trie_microservice.exception.TrieRuntimeException;
+import com.typeahead.trie_microservice.exception.TrieException;
 
 @Component
-public class Trie implements TrieInterface {
+public class TrieImpl implements TrieInterface {
 
-    private final Node rootNode;
+    private final TrieNode rootNode;
     private final Logger logger;
 
-    public Trie() {
-        this.rootNode = new Node();
-        this.logger = LogManager.getLogger(Trie.class);
+    public TrieImpl() {
+        this.rootNode = new TrieNode();
+        this.logger = LogManager.getLogger(TrieImpl.class);
     }
 
     public List<String> getPrefixes(String prefix) {
-        Node currentNode = rootNode;
+        TrieNode currentNode = rootNode;
         for (char currentCharacter : prefix.toCharArray()) {
             currentNode = currentNode.getChildren().get(currentCharacter);
             if (currentNode == null)
@@ -37,17 +37,17 @@ public class Trie implements TrieInterface {
     public void addPrefix(String prefix) {
         try {
             if (prefix == null || prefix.isEmpty()) {
-                throw new TrieRuntimeException("Prefix cannot be null or empty.");
+                throw new TrieException("Prefix cannot be null or empty.");
             }
 
-            Node currentNode = rootNode;
+            TrieNode currentNode = rootNode;
             for (char currentCharacter : prefix.toCharArray()) {
                 currentNode = currentNode.addChildIfAbsent(currentCharacter);
                 currentNode.addToPopularWords(prefix);
             }
             currentNode.setEndOfWord(true);
 
-        } catch (TrieRuntimeException e) {
+        } catch (TrieException e) {
             logger.error("Error while adding prefixes: {}", e.getMessage());
             throw e; //revisit how we are testing/handling this exception
         }

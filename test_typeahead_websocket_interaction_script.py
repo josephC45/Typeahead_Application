@@ -27,6 +27,7 @@ async def test_send_keyboard_input():
 
 @pytest.mark.asyncio
 async def test_negative_receive_suggestions():
+
     mock_websocket = AsyncMock()
     mock_websocket.recv.side_effect = RuntimeError("Simulated connection closed")
 

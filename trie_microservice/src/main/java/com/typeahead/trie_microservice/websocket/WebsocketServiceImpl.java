@@ -60,9 +60,10 @@ public class WebsocketServiceImpl implements WebsocketService {
                 wordTyped.setLength(0);
             }
 
-        } catch (KafkaException e){
+        } catch (KafkaException e) {
             logger.error("Error sending prefix to Kafka: {}", e.getMessage(), e);
             sendResponseToClient(session, new TextMessage("Error sending data to Kafka."));
+            wordTyped.setLength(0);
         }
     }
 }

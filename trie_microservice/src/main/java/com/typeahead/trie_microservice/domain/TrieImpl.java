@@ -13,11 +13,10 @@ import com.typeahead.trie_microservice.exception.TrieException;
 public class TrieImpl implements TrieInterface {
 
     private final TrieNode rootNode;
-    private final Logger logger;
+    private static final Logger logger = LogManager.getLogger(TrieImpl.class);
 
     public TrieImpl() {
         this.rootNode = new TrieNode();
-        this.logger = LogManager.getLogger(TrieImpl.class);
     }
 
     public List<String> getPrefixes(String prefix) {

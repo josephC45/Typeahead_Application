@@ -43,10 +43,27 @@ public class WebsocketServiceImplTests {
 
     private StringBuilder wordTyped;
 
-
     @BeforeEach()
     public void setup() {
         wordTyped = new StringBuilder();
+    }
+
+    @Test
+    void whenSendResponseToClientCalled_shouldSendMessageSuccessfully() throws IOException {
+        websocketService.sendResponseToClient(session, new TextMessage("test"));
+
+        ArgumentCaptor<TextMessage> captor = ArgumentCaptor.forClass(TextMessage.class);
+        verify(session, atLeastOnce()).sendMessage(captor.capture());
+
+        TextMessage sentMessage = captor.getValue();
+        assertEquals("test", sentMessage.getPayload());
+    }
+
+    @Test
+    void whenSendResponseToClientThrowsIOException_shouldHandleException() throws IOException {
+        doThrow(new IOException("Failed to send to websocket client")).when(session).sendMessage(new TextMessage("t"));
+        websocketService.sendResponseToClient(session, new TextMessage("t"));
+        verify(session).sendMessage(any(TextMessage.class));
     }
 
     @Test
@@ -80,13 +97,6 @@ public class WebsocketServiceImplTests {
 
         verify(kafkaService).sendMessageToKafka("test");
         assertEquals(0, wordTyped.length());
-    }
-
-    @Test
-    void whenSendResponseToClientThrowsIOException_shouldHandleException() throws IOException{
-        doThrow(new IOException("Failed to send to websocket client")).when(session).sendMessage(new TextMessage("t"));
-        websocketService.sendResponseToClient(session, new TextMessage("t"));
-        verify(session).sendMessage(any(TextMessage.class));
     }
 
     @Test

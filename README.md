@@ -40,3 +40,7 @@ Supports running multiple instances of each service to handle increased load.
 - Docker: Containerization for scalable deployment.
 - JUnit/Mockito: Testing framework for unit and integration tests.
 - Python: Script used for establishing websocket connection via CLI.
+
+## License
+This project uses the following open-source libraries:
+- **Spring Kafka**: Licensed under the [Apache License 2.0](https://github.com/spring-projects/spring-kafka/blob/main/LICENSE).

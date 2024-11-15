@@ -16,7 +16,7 @@ The application follows a microservices architecture, with the following compone
 ### Typeahead Service:
 Built with Spring Boot and integrates a Trie data structure.
 Exposes a WebSocket endpoint to provide real-time suggestions.
-Uses Kafka to send typed prefixes to the processing service.
+Uses Kafka to send typed prefixes to the Spark Streaming Service.
 
 ### Kafka:
 Acts as a messaging queue between the Typeahead Service and Spark Streaming Service.

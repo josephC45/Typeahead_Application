@@ -43,4 +43,7 @@ Supports running multiple instances of each service to handle increased load.
 
 ## License
 This project uses the following open-source libraries:
+
+- **Zipkin**: [Zipkin](https://zipkin.io/), which is licensed under the Apache License, Version 2.0. You can view the full license at [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
+
 - **Spring Kafka**: Licensed under the [Apache License 2.0](https://github.com/spring-projects/spring-kafka/blob/main/LICENSE).

@@ -1,24 +1,19 @@
 package com.typeahead.trie_microservice.websocket;
 
-import java.io.IOException;
-import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketSession;
 
 import com.typeahead.trie_microservice.domain.TrieService;
 import com.typeahead.trie_microservice.infrastructure.KafkaProducerService;
-import com.typeahead.trie_microservice.exception.KafkaException;
+
+import reactor.core.publisher.Mono;
 
 @Service
 public class WebsocketServiceImpl implements WebsocketService {
 
     private final TrieService trieService;
     private final KafkaProducerService kafkaService;
-    private final StringBuilder wordTyped = new StringBuilder();
     private static final Logger logger = LogManager.getLogger(WebsocketServiceImpl.class);
 
     public WebsocketServiceImpl(TrieService trieService, KafkaProducerService kafkaService) {
@@ -26,44 +21,33 @@ public class WebsocketServiceImpl implements WebsocketService {
         this.kafkaService = kafkaService;
     }
 
-    @Override
-    public boolean isEndOfWord(String currentPrefix) {
-        return currentPrefix.matches("[^A-Za-z']");
+    private Mono<Boolean> isEndOfWord(String currentPrefix) {
+        return Mono.just(currentPrefix.matches("[^A-Za-z']"));
     }
 
     @Override
-    public void sendResponseToClient(WebSocketSession session, TextMessage response) {
-        try {
-            session.sendMessage(response);
-            logger.info("Response sent to client.");
-        } catch (IOException e) {
-            logger.error("Failed to send to websocket client: " + e.getMessage(), e);
-        }
-    }
+    public Mono<String> queryTrie(String currentPrefix) {
+        return Mono.deferContextual(context -> {
+            StringBuilder wordTyped = context.get("wordTyped");
+            return isEndOfWord(currentPrefix)
+                    .flatMap(endOfWord -> {
+                        if (!endOfWord) {
+                            wordTyped.append(currentPrefix);
+                            String curWordTyped = wordTyped.toString();
 
-    @Override
-    public void queryTrie(WebSocketSession session, String currentPrefix) {
-        try {
-            if (!isEndOfWord(currentPrefix)) {
-                wordTyped.append(currentPrefix);
-                String curWordTyped = wordTyped.toString();
-                List<String> popularAssociatedWordsWithPrefix = trieService.getPopularPrefixes(curWordTyped);
-
-                TextMessage response = (popularAssociatedWordsWithPrefix.isEmpty())
-                        ? new TextMessage("No popular prefixes")
-                        : new TextMessage(String.join(",", popularAssociatedWordsWithPrefix));
-
-                sendResponseToClient(session, response);
-            } else {
-                logger.info("End of word character reached. Sending to Kafka...");
-                kafkaService.sendMessageToKafka(wordTyped.toString());
-                wordTyped.setLength(0);
-            }
-
-        } catch (KafkaException e) {
-            logger.error("Error sending prefix to Kafka: {}", e.getMessage(), e);
-            sendResponseToClient(session, new TextMessage("Error sending data to Kafka."));
-            wordTyped.setLength(0);
-        }
+                            return trieService.getPopularPrefixes(curWordTyped)
+                                    .map(popularWordsList -> {
+                                        return (popularWordsList.isEmpty())
+                                                ? "No popular prefixes"
+                                                : String.join(",", popularWordsList);
+                                    });
+                        } else {
+                            logger.info("End of word character reached. Sending to Kafka...");
+                            kafkaService.sendMessageToKafka(wordTyped.toString());
+                            wordTyped.setLength(0);
+                            return Mono.just("Word sent to Kafka");
+                        }
+                    });
+        });
     }
 }

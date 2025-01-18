@@ -23,7 +23,7 @@ async def receive_suggestions(websocket):
         print("Websocket connection closed.")
 
 async def interact_with_websocket():
-    uri = 'ws://localhost:8080/ws'
+    uri = 'ws://localhost:8080/ws/typeahead'
     async with websockets.connect(uri) as websocket:
         await asyncio.gather(
             send_keyboard_input(websocket),
@@ -32,5 +32,3 @@ async def interact_with_websocket():
 
 if __name__ == "__main__":
     asyncio.run(interact_with_websocket())
-
-#TODO Change websocket connection to point to api gateway

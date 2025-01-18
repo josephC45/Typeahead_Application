@@ -14,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.typeahead.trie_microservice.exception.TrieException;
 
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
+
 public class TrieTests {
 
     private TrieImpl trie;
@@ -50,12 +53,18 @@ public class TrieTests {
     public void givenPrefix_whenAdded_shouldReturnMatchingPrefixes() {
         trie.addPrefix("hello");
 
-        List<String> prefixesWithH = trie.getPrefixes("h");
-        List<String> prefixesWithT = trie.getPrefixes("testing");
+        Mono<List<String>> prefixesWithH = trie.getPrefixes("h");
+        Mono<List<String>> prefixesWithT = trie.getPrefixes("testing");
 
-        assertEquals(1, prefixesWithH.size());
-        assertTrue(prefixesWithH.contains("hello"));
-        assertEquals(0, prefixesWithT.size());
+        StepVerifier.create(prefixesWithH)
+        .expectNextMatches(popularWordsWithPrefixH -> {
+            assertEquals(1, popularWordsWithPrefixH.size());
+            assertEquals("hello", popularWordsWithPrefixH.get(0));
+            return true;
+        }).verifyComplete();
+
+        //TODO Will need to be changed to handle null lists in future
+        StepVerifier.create(prefixesWithT).expectComplete().verify();
     }
 
     @Test
@@ -65,17 +74,30 @@ public class TrieTests {
         trie.addPrefix("donut");
         trie.addPrefix("testing");
 
-        List<String> prefixesWithT = trie.getPrefixes("t");
-        List<String> prefixesWithD = trie.getPrefixes("d");
-        List<String> prefixesWithDont = trie.getPrefixes("don'");
+        Mono<List<String>> prefixesWithT = trie.getPrefixes("t");
+        Mono<List<String>> prefixesWithD = trie.getPrefixes("d");
+        Mono<List<String>> prefixesWithDont = trie.getPrefixes("don'");
 
-        assertEquals(3, prefixesWithD.size());
-        assertTrue(prefixesWithD.containsAll(List.of("don't", "donut")));
+        StepVerifier.create(prefixesWithT)
+        .expectNextMatches(popularWordsWithPrefixT -> {
+            assertEquals(1, popularWordsWithPrefixT.size());
+            assertEquals("testing", popularWordsWithPrefixT.get(0));
+            return true;
+        }).verifyComplete();
+        
+        StepVerifier.create(prefixesWithD)
+        .expectNextMatches(popularWordsWithPrefixD -> {
+            assertEquals(3, popularWordsWithPrefixD.size());
+            assertTrue(popularWordsWithPrefixD.containsAll(List.of("don't", "donut")));
+            assertFalse(popularWordsWithPrefixD.contains("testing"));
+            return true;
+        }).verifyComplete();
 
-        assertEquals(1, prefixesWithDont.size());
-        assertTrue(prefixesWithDont.contains("don't"));
-
-        assertTrue(prefixesWithT.contains("testing"));
-        assertFalse(prefixesWithD.contains("testing"));
+        StepVerifier.create(prefixesWithDont)
+        .expectNextMatches(popularWordsWithPrefixDont -> {
+            assertEquals(1, popularWordsWithPrefixDont.size());
+            assertEquals("don't", popularWordsWithPrefixDont.get(0));
+            return true;
+        }).verifyComplete();
     }
 }

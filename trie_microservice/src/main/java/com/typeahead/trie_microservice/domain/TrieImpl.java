@@ -49,7 +49,7 @@ public class TrieImpl implements TrieInterface {
         for (char currentCharacter : prefix.toCharArray()) {
             currentNode = currentNode.getChildren().get(currentCharacter);
             if (currentNode == null)
-                return Mono.empty();
+                return Mono.empty(); //TODO change to return a null indicating no popular words
         }
         return dfsConstructPopularWords(currentNode, prefix);
     }

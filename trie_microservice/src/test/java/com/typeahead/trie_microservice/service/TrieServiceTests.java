@@ -15,6 +15,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.typeahead.trie_microservice.domain.TrieInterface;
 
+import reactor.core.publisher.Mono;
+
 @ExtendWith(MockitoExtension.class)
 public class TrieServiceTests {
 
@@ -27,11 +29,11 @@ public class TrieServiceTests {
     @Test
     public void givenExistingTrie_whenPopularPrefixesIsCalled_shouldCallGetPrefixesOnTrie() {
         String prefix = "h";
-        List<String> expectedPrefixes = Arrays.asList("hello", "hey");
+        Mono<List<String>> expectedPrefixes = Mono.just(Arrays.asList("hello", "hey"));
 
         when(trieMock.getPrefixes(prefix)).thenReturn(expectedPrefixes);
 
-        List<String> result = trieService.getPopularPrefixes(prefix);
+        Mono<List<String>> result = trieService.getPopularPrefixes(prefix);
         assertEquals(expectedPrefixes, result);
         verify(trieMock).getPrefixes(prefix);
     }
@@ -39,7 +41,6 @@ public class TrieServiceTests {
     @Test
     public void givenPrefix_whenAddedToTrie_shouldCallAddPrefixOnTrie() {
         String prefix = "hello";
-
         trieService.addCurrentPrefix(prefix);
         verify(trieMock).addPrefix(prefix);
     }

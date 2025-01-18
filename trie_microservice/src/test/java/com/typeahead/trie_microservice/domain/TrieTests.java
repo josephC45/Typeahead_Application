@@ -57,13 +57,13 @@ public class TrieTests {
         Mono<List<String>> prefixesWithT = trie.getPrefixes("testing");
 
         StepVerifier.create(prefixesWithH)
-        .expectNextMatches(popularWordsWithPrefixH -> {
-            assertEquals(1, popularWordsWithPrefixH.size());
-            assertEquals("hello", popularWordsWithPrefixH.get(0));
-            return true;
-        }).verifyComplete();
+                .expectNextMatches(popularWordsWithPrefixH -> {
+                    assertEquals(1, popularWordsWithPrefixH.size());
+                    assertEquals("hello", popularWordsWithPrefixH.get(0));
+                    return true;
+                }).verifyComplete();
 
-        //TODO Will need to be changed to handle null lists in future
+        // TODO Will need to be changed to handle null lists in future
         StepVerifier.create(prefixesWithT).expectComplete().verify();
     }
 
@@ -79,25 +79,25 @@ public class TrieTests {
         Mono<List<String>> prefixesWithDont = trie.getPrefixes("don'");
 
         StepVerifier.create(prefixesWithT)
-        .expectNextMatches(popularWordsWithPrefixT -> {
-            assertEquals(1, popularWordsWithPrefixT.size());
-            assertEquals("testing", popularWordsWithPrefixT.get(0));
-            return true;
-        }).verifyComplete();
-        
+                .expectNextMatches(popularWordsWithPrefixT -> {
+                    assertEquals(1, popularWordsWithPrefixT.size());
+                    assertEquals("testing", popularWordsWithPrefixT.get(0));
+                    return true;
+                }).verifyComplete();
+
         StepVerifier.create(prefixesWithD)
-        .expectNextMatches(popularWordsWithPrefixD -> {
-            assertEquals(3, popularWordsWithPrefixD.size());
-            assertTrue(popularWordsWithPrefixD.containsAll(List.of("don't", "donut")));
-            assertFalse(popularWordsWithPrefixD.contains("testing"));
-            return true;
-        }).verifyComplete();
+                .expectNextMatches(popularWordsWithPrefixD -> {
+                    assertEquals(3, popularWordsWithPrefixD.size());
+                    assertTrue(popularWordsWithPrefixD.containsAll(List.of("don't", "donut")));
+                    assertFalse(popularWordsWithPrefixD.contains("testing"));
+                    return true;
+                }).verifyComplete();
 
         StepVerifier.create(prefixesWithDont)
-        .expectNextMatches(popularWordsWithPrefixDont -> {
-            assertEquals(1, popularWordsWithPrefixDont.size());
-            assertEquals("don't", popularWordsWithPrefixDont.get(0));
-            return true;
-        }).verifyComplete();
+                .expectNextMatches(popularWordsWithPrefixDont -> {
+                    assertEquals(1, popularWordsWithPrefixDont.size());
+                    assertEquals("don't", popularWordsWithPrefixDont.get(0));
+                    return true;
+                }).verifyComplete();
     }
 }

@@ -25,10 +25,10 @@ public class TrieIntegrationTest {
         Mono<List<String>> actual = trieService.getPopularPrefixes(expected);
 
         StepVerifier.create(actual)
-            .expectNextMatches(popularWordsList -> {
-                assertNotNull(popularWordsList);
-                assertEquals(expected, popularWordsList.get(0));
-                return true;
-            }).verifyComplete();
+                .expectNextMatches(popularWordsList -> {
+                    assertNotNull(popularWordsList);
+                    assertEquals(expected, popularWordsList.get(0));
+                    return true;
+                }).verifyComplete();
     }
 }

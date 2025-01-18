@@ -3,13 +3,16 @@ package com.typeahead.trie_microservice.websocket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.handler.TextWebSocketHandler;
+import org.springframework.web.reactive.socket.WebSocketHandler;
+import org.springframework.web.reactive.socket.WebSocketMessage;
+import org.springframework.web.reactive.socket.WebSocketSession;
 
+import reactor.core.publisher.Mono;
+import reactor.util.context.Context;
+
+//TODO Revisit logging and determine where to place log statements
 @Component
-public class WebsocketHandler extends TextWebSocketHandler {
+public class WebsocketHandler implements WebSocketHandler {
 
     private final WebsocketService websocketService;
     private static final Logger logger = LogManager.getLogger(WebsocketHandler.class);
@@ -19,23 +22,18 @@ public class WebsocketHandler extends TextWebSocketHandler {
     }
 
     @Override
-    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        logger.info("WebSocket connection established with client: " + session.getId());
-    }
+    public Mono<Void> handle(WebSocketSession session) {
+        return session.receive()
+                .map(WebSocketMessage::getPayloadAsText)
+                .flatMap(currentPrefix -> {
 
-    @Override
-    public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
-        logger.error("Error in WebSocket transport for client: " + session.getId() + " - " + exception.getMessage());
-    }
+                    StringBuilder wordTyped = new StringBuilder();
 
-    @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        logger.info("WebSocket connection closed for client: " + session.getId());
-    }
-
-    @Override
-    public void handleTextMessage(WebSocketSession session, TextMessage textMessage) {
-        String currentPrefix = textMessage.getPayload();
-        websocketService.queryTrie(session, currentPrefix);
+                    return Mono.deferContextual(context -> websocketService.queryTrie(currentPrefix))
+                            .contextWrite(Context.of("wordTyped", wordTyped))
+                            .flatMap(response -> session.send(Mono.just(session.textMessage(response))))
+                            .then();
+                })
+                .then();
     }
 }

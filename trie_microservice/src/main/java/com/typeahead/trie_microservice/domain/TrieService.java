@@ -1,10 +1,10 @@
 package com.typeahead.trie_microservice.domain;
 
-import java.util.List;
+import reactor.core.publisher.Flux;
 
 public interface TrieService {
 
-    public List<String> getPopularPrefixes(String prefix);
+    public Flux<String> getPopularPrefixes(String prefix);
 
     public void addCurrentPrefix(String prefix); 
     

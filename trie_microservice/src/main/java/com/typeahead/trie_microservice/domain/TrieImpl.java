@@ -1,5 +1,7 @@
 package com.typeahead.trie_microservice.domain;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -9,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.typeahead.trie_microservice.exception.TrieException;
 
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Component
 public class TrieImpl implements TrieInterface {
@@ -21,8 +23,9 @@ public class TrieImpl implements TrieInterface {
         this.rootNode = new TrieNode();
     }
 
-    private Flux<String> dfsConstructPopularWords(TrieNode node, String prefix) {
-        return Flux.create(sink -> {
+    private Mono<List<String>> dfsConstructPopularWords(TrieNode node, String prefix) {
+        return Mono.create(sink -> {
+            List<String> popularWords = new ArrayList<>();
             Stack<Map.Entry<TrieNode, String>> stack = new Stack<>();
             stack.push(Map.entry(node, prefix));
             while (!stack.isEmpty()) {
@@ -30,25 +33,23 @@ public class TrieImpl implements TrieInterface {
                 TrieNode currentNode = current.getKey();
                 String currentPrefix = current.getValue();
 
-                if (currentNode.isEndOfWord())
-                    sink.next(currentPrefix);
+                if (currentNode.isEndOfWord()) popularWords.add(currentPrefix);
 
                 currentNode.getChildren()
                         .entrySet()
                         .forEach(child -> stack.push(Map.entry(child.getValue(), currentPrefix + child.getKey())));
             }
-
-            sink.complete();
+            sink.success(popularWords);
         });
     }
 
     @Override
-    public Flux<String> getPrefixes(String prefix) {
+    public Mono<List<String>> getPrefixes(String prefix) {
         TrieNode currentNode = rootNode;
         for (char currentCharacter : prefix.toCharArray()) {
             currentNode = currentNode.getChildren().get(currentCharacter);
             if (currentNode == null)
-                return Flux.empty();
+                return Mono.empty();
         }
         return dfsConstructPopularWords(currentNode, prefix);
     }

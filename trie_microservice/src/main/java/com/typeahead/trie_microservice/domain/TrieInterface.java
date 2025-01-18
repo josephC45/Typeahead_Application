@@ -1,10 +1,12 @@
 package com.typeahead.trie_microservice.domain;
 
-import reactor.core.publisher.Flux;
+import java.util.List;
+
+import reactor.core.publisher.Mono;
 
 public interface TrieInterface {
 
-    public Flux<String> getPrefixes(String prefix);
+    public Mono<List<String>> getPrefixes(String prefix);
 
     public void addPrefix(String prefix); 
     

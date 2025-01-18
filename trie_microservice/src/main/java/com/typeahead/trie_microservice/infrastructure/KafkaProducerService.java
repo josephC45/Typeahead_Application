@@ -1,7 +1,9 @@
 package com.typeahead.trie_microservice.infrastructure;
 
+import reactor.core.publisher.Mono;
+
 public interface KafkaProducerService {
 
-    public void sendMessageToKafka(String prefix);
-    
+    public Mono<Void> sendMessageToKafka(String prefix);
+
 }

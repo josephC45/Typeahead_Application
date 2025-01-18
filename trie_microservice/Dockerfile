@@ -8,7 +8,7 @@ WORKDIR /app
 COPY target/typeahead-app.jar /app/typeahead-app.jar
 
 # Expose port app runs on
-EXPOSE 8080
+EXPOSE 8082
 
 # Command to run app
 ENTRYPOINT ["java", "-jar", "typeahead-app.jar"]

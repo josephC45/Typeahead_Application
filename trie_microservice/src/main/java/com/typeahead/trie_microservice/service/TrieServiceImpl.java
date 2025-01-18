@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import com.typeahead.trie_microservice.domain.TrieInterface;
 import com.typeahead.trie_microservice.domain.TrieService;
 
+import reactor.core.publisher.Flux;
+
 @Service
 public class TrieServiceImpl implements TrieService {
 
@@ -17,7 +19,7 @@ public class TrieServiceImpl implements TrieService {
     }
 
     @Override
-    public List<String> getPopularPrefixes(String prefix) {
+    public Flux<String> getPopularPrefixes(String prefix) {
         return trie.getPrefixes(prefix);
     }
 

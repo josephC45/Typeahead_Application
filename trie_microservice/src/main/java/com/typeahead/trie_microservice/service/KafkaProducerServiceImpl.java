@@ -39,25 +39,26 @@ public class KafkaProducerServiceImpl implements KafkaProducerService {
         Span span = tracer.nextSpan().name("kafka-producer").start();
 
         return Mono.defer(() -> {
-                return Mono.justOrEmpty(tracer.currentSpan())
-                .flatMap(currentSpan -> {
-                    if (currentSpan != null) {
-                        return createKafkaRecord(prefix, currentSpan)
-                                .flatMap(record -> {
-                                    return Mono.fromRunnable(() -> kafkaTemplate.send(record));
-                                });
-                    } else {
-                        logger.warn("No active trace context found, sending message without tracing.");
-                        return Mono.fromRunnable(() -> kafkaTemplate.sendDefault(prefix));
-                    }
+            return Mono.justOrEmpty(tracer.currentSpan())
+                    .flatMap(currentSpan -> {
+                        if (currentSpan != null) {
+                            return createKafkaRecord(prefix, currentSpan)
+                                    .flatMap(record -> {
+                                        return Mono.fromRunnable(() -> kafkaTemplate.send(record));
+                                    });
+                        } else {
+                            logger.warn("No active trace context found, sending message without tracing.");
+                            return Mono.fromRunnable(() -> kafkaTemplate.sendDefault(prefix));
+                        }
 
-                })
-                .onErrorResume(KafkaException.class, e -> {
-                    logger.error("KafkaTemplate sendDefault ran into error sending prefix to Kafka: {}", e.getMessage(), e);
-                    return Mono.empty();
-                })
-                .doOnTerminate(() -> span.end())
-                .then();
+                    })
+                    .onErrorResume(KafkaException.class, e -> {
+                        logger.error("KafkaTemplate sendDefault ran into error sending prefix to Kafka: {}",
+                                e.getMessage(), e);
+                        return Mono.empty();
+                    })
+                    .doOnTerminate(() -> span.end())
+                    .then();
         });
     }
 }

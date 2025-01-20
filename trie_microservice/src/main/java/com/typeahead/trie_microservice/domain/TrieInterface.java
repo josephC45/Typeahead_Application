@@ -8,6 +8,6 @@ public interface TrieInterface {
 
     public Mono<List<String>> getPrefixes(String prefix);
 
-    public void addPrefix(String prefix); 
-    
+    public void addPrefix(String prefix);
+
 }

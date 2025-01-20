@@ -41,13 +41,13 @@ public class WebsocketServiceImpl implements WebsocketService {
                                                 ? "No popular prefixes"
                                                 : String.join(",", popularWordsList);
                                     });
-                        } else if(endOfWord && !wordTyped.isEmpty()) {
+                        } else if (endOfWord && !wordTyped.isEmpty()) {
                             logger.info("End of word character reached. Sending to Kafka...");
                             kafkaService.sendMessageToKafka(wordTyped.toString());
                             wordTyped.setLength(0);
                             return Mono.just("Word sent to Kafka");
-                        }
-                        else return Mono.just("Something unexpected happened"); //TODO temp
+                        } else
+                            return Mono.just("Something unexpected happened"); // TODO temp
                     });
         });
     }

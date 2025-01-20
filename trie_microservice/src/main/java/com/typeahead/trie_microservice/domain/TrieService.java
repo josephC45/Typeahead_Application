@@ -8,6 +8,6 @@ public interface TrieService {
 
     public Mono<List<String>> getPopularPrefixes(String prefix);
 
-    public void addCurrentPrefix(String prefix); 
-    
+    public void addCurrentPrefix(String prefix);
+
 }

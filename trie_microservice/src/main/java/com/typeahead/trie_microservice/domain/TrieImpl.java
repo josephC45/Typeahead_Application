@@ -33,7 +33,8 @@ public class TrieImpl implements TrieInterface {
                 TrieNode currentNode = current.getKey();
                 String currentPrefix = current.getValue();
 
-                if (currentNode.isEndOfWord()) popularWords.add(currentPrefix);
+                if (currentNode.isEndOfWord())
+                    popularWords.add(currentPrefix);
 
                 currentNode.getChildren()
                         .entrySet()
@@ -47,7 +48,8 @@ public class TrieImpl implements TrieInterface {
     public Mono<List<String>> getPrefixes(String prefix) {
         TrieNode currentNode = rootNode;
         for (char currentCharacter : prefix.toCharArray()) {
-            if(!currentNode.getChildren().containsKey(currentCharacter)) return Mono.empty();
+            if (!currentNode.getChildren().containsKey(currentCharacter))
+                return Mono.empty();
             currentNode = currentNode.getChildren().get(currentCharacter);
         }
         return dfsConstructPopularWords(currentNode, prefix);

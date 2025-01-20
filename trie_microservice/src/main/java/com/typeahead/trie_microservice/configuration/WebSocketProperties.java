@@ -25,5 +25,5 @@ public class WebSocketProperties {
     public void setHandlerOrigins(String handlerOrigins) {
         this.handlerOrigins = handlerOrigins;
     }
-    
+
 }

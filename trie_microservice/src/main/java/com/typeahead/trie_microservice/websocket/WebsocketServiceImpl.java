@@ -22,7 +22,7 @@ public class WebsocketServiceImpl implements WebsocketService {
     }
 
     private Mono<Boolean> isEndOfWord(String currentPrefix) {
-        return Mono.just(currentPrefix.matches("[^A-Za-z']"));
+        return Mono.just(currentPrefix.isEmpty() || currentPrefix.matches("[^A-Za-z']"));
     }
 
     @Override
@@ -41,12 +41,13 @@ public class WebsocketServiceImpl implements WebsocketService {
                                                 ? "No popular prefixes"
                                                 : String.join(",", popularWordsList);
                                     });
-                        } else {
+                        } else if(endOfWord && !wordTyped.isEmpty()) {
                             logger.info("End of word character reached. Sending to Kafka...");
                             kafkaService.sendMessageToKafka(wordTyped.toString());
                             wordTyped.setLength(0);
                             return Mono.just("Word sent to Kafka");
                         }
+                        else return Mono.just("Something unexpected happened"); //TODO temp
                     });
         });
     }

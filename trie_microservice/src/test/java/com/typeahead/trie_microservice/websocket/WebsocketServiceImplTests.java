@@ -38,16 +38,15 @@ public class WebsocketServiceImplTests {
     void givenNonExistentPrefix_whenWebsocketQueriesTrie_shouldReturnPopularPrefixesToClient() throws IOException {
         String currentPrefix = "a";
         Mono<List<String>> mockPrefixes = Mono.just(Arrays.asList());
-        when(trieService.getPopularPrefixes("a")).thenReturn(mockPrefixes);
         StringBuilder wordTyped = new StringBuilder();
+        when(trieService.getPopularPrefixes("a")).thenReturn(mockPrefixes);
 
         // Simulate typing "a"
         StepVerifier.create(
-            websocketService.queryTrie(currentPrefix)
-                .contextWrite(Context.of("wordTyped", wordTyped))
-        )
-        .expectNext("No popular prefixes")
-        .verifyComplete();
+                websocketService.queryTrie(currentPrefix)
+                        .contextWrite(Context.of("wordTyped", wordTyped)))
+                .expectNext("No popular prefixes")
+                .verifyComplete();
 
         assertEquals(1, wordTyped.length());
         verify(trieService).getPopularPrefixes("a");
@@ -57,16 +56,15 @@ public class WebsocketServiceImplTests {
     void givenValidPrefix_whenWebsocketQueriesTrie_shouldReturnPopularPrefixesToClient() throws IOException {
         String currentPrefix = "t";
         Mono<List<String>> mockPrefixes = Mono.just(Arrays.asList("testing", "testosterone"));
-        lenient().when(trieService.getPopularPrefixes("test")).thenReturn(mockPrefixes);
         StringBuilder wordTyped = new StringBuilder("tes");
+        lenient().when(trieService.getPopularPrefixes("test")).thenReturn(mockPrefixes);
 
         // Simulate typing final 't' in "test"
         StepVerifier.create(
-            websocketService.queryTrie(currentPrefix)
-                .contextWrite(Context.of("wordTyped", wordTyped))
-        )
-        .expectNext("testing,testosterone")
-        .verifyComplete();
+                websocketService.queryTrie(currentPrefix)
+                        .contextWrite(Context.of("wordTyped", wordTyped)))
+                .expectNext("testing,testosterone")
+                .verifyComplete();
 
         assertEquals(4, wordTyped.length());
         verify(trieService).getPopularPrefixes("test");
@@ -80,11 +78,10 @@ public class WebsocketServiceImplTests {
 
         // Simulate typing " "
         StepVerifier.create(
-            websocketService.queryTrie(currentPrefix)
-                .contextWrite(Context.of("wordTyped", wordTyped))
-        )
-        .expectNext("Word sent to Kafka")
-        .verifyComplete();
+                websocketService.queryTrie(currentPrefix)
+                        .contextWrite(Context.of("wordTyped", wordTyped)))
+                .expectNext("Word sent to Kafka")
+                .verifyComplete();
 
         verify(kafkaService).sendMessageToKafka("test");
         assertEquals(0, wordTyped.length());

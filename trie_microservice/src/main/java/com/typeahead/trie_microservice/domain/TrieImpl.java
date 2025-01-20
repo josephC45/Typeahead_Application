@@ -47,9 +47,8 @@ public class TrieImpl implements TrieInterface {
     public Mono<List<String>> getPrefixes(String prefix) {
         TrieNode currentNode = rootNode;
         for (char currentCharacter : prefix.toCharArray()) {
+            if(!currentNode.getChildren().containsKey(currentCharacter)) return Mono.empty();
             currentNode = currentNode.getChildren().get(currentCharacter);
-            if (currentNode == null)
-                return Mono.empty(); //TODO change to return a null indicating no popular words
         }
         return dfsConstructPopularWords(currentNode, prefix);
     }

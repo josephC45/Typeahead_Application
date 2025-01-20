@@ -26,10 +26,10 @@ public class WebsocketHandler implements WebSocketHandler {
         return session.receive()
                 .map(WebSocketMessage::getPayloadAsText)
                 .flatMap(currentPrefix -> {
-
+                    
                     StringBuilder wordTyped = new StringBuilder();
 
-                    return Mono.deferContextual(context -> websocketService.queryTrie(currentPrefix))
+                    return Mono.deferContextual(context -> websocketService.queryTrie(currentPrefix.stripLeading())) //TODO Revisit for Single Responsibility/Separation of Concerns (stripLeading)
                             .contextWrite(Context.of("wordTyped", wordTyped))
                             .flatMap(response -> session.send(Mono.just(session.textMessage(response))))
                             .then();

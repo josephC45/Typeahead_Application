@@ -25,6 +25,11 @@ public class KafkaProducerServiceImpl implements KafkaProducerService {
         this.tracer = tracer;
     }
 
+    private Throwable handleKafkaException(Throwable throwable) {
+        logger.error("Failed to send message to Kafka: {}", throwable.getMessage(), throwable);
+        return new RuntimeException("Kafka message sending failed", throwable);
+    }
+
     private Mono<ProducerRecord<String, String>> createKafkaRecord(String prefix, Span currentSpan) {
         ProducerRecord<String, String> record = new ProducerRecord<>(kafkaTemplate.getDefaultTopic(), prefix);
 
@@ -52,11 +57,7 @@ public class KafkaProducerServiceImpl implements KafkaProducerService {
                         }
 
                     })
-                    .onErrorResume(KafkaException.class, e -> {
-                        logger.error("KafkaTemplate sendDefault ran into error sending prefix to Kafka: {}",
-                                e.getMessage(), e);
-                        return Mono.empty();
-                    })
+                    .onErrorMap(KafkaException.class, this::handleKafkaException)
                     .doOnTerminate(() -> span.end())
                     .then();
         });

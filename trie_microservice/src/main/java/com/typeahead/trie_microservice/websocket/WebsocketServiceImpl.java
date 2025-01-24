@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.typeahead.trie_microservice.domain.TrieService;
+import com.typeahead.trie_microservice.exception.KafkaException;
 import com.typeahead.trie_microservice.infrastructure.KafkaProducerService;
 
 import reactor.core.publisher.Mono;
@@ -19,6 +20,11 @@ public class WebsocketServiceImpl implements WebsocketService {
     public WebsocketServiceImpl(TrieService trieService, KafkaProducerService kafkaService) {
         this.trieService = trieService;
         this.kafkaService = kafkaService;
+    }
+
+    private Mono<String> handleKafkaException(Throwable throwable) {
+        logger.warn("Error occurred in sendMessageToKafka: {}", throwable.getMessage(), throwable);
+        return Mono.just("Word could not be processed...");
     }
 
     private Mono<Boolean> isEndOfWord(String currentPrefix) {
@@ -47,8 +53,8 @@ public class WebsocketServiceImpl implements WebsocketService {
                             wordTyped.setLength(0);
                             return Mono.just("Word sent to Kafka");
                         } else
-                            return Mono.just("Something unexpected happened"); // TODO temp
-                    });
+                            return Mono.just("Something unexpected happened");
+                    }).onErrorResume(KafkaException.class, this::handleKafkaException);
         });
     }
 }

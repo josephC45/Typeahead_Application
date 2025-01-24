@@ -1,8 +1,13 @@
 package com.typeahead.trie_microservice.websocket;
 
+import java.io.IOException;
+import java.time.Duration;
+import java.util.concurrent.TimeoutException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.socket.CloseStatus;
 import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.WebSocketMessage;
 import org.springframework.web.reactive.socket.WebSocketSession;
@@ -10,7 +15,6 @@ import org.springframework.web.reactive.socket.WebSocketSession;
 import reactor.core.publisher.Mono;
 import reactor.util.context.Context;
 
-//TODO Revisit logging and determine where to place log statements
 @Component
 public class WebsocketHandler implements WebSocketHandler {
 
@@ -19,6 +23,16 @@ public class WebsocketHandler implements WebSocketHandler {
 
     public WebsocketHandler(WebsocketService websocketService) {
         this.websocketService = websocketService;
+    }
+
+    private Mono<Void> handleTimeoutException(WebSocketSession session, Throwable throwable) {
+        logger.warn("WebSocket query timed out: {}", throwable.getMessage());
+        return session.send(Mono.just(session.textMessage("Error: Query timed out.")));
+    }
+
+    private Mono<Void> handleIOException(WebSocketSession session, Throwable throwable) {
+        logger.error("I/O error during WebSocket communication: {}", throwable.getMessage());
+        return session.close(CloseStatus.SERVER_ERROR);
     }
 
     @Override
@@ -30,10 +44,13 @@ public class WebsocketHandler implements WebSocketHandler {
                     StringBuilder wordTyped = new StringBuilder();
                     // TODO Revisit for Single Responsibility/Separation of Concerns (stripLeading)
                     return Mono.deferContextual(context -> websocketService.queryTrie(currentPrefix.stripLeading()))
+                            .timeout(Duration.ofSeconds(3))
                             .contextWrite(Context.of("wordTyped", wordTyped))
                             .flatMap(response -> session.send(Mono.just(session.textMessage(response))))
                             .then();
                 })
+                .onErrorResume(TimeoutException.class, toe -> handleTimeoutException(session, toe))
+                .onErrorResume(IOException.class, ioe -> handleIOException(session, ioe))
                 .then();
     }
 }

@@ -63,7 +63,6 @@ public class TrieTests {
                     return true;
                 }).verifyComplete();
 
-        // TODO Will need to be changed to handle null lists in future
         StepVerifier.create(prefixesWithT).expectComplete().verify();
     }
 

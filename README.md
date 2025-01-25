@@ -1,10 +1,10 @@
-# Typeahead Application
+# Multithreaded & Reactive Typeahead Application
 
 ## Overview
 The Typeahead Application is a scalable and efficient system that provides real-time suggestions as users type. It utilizes a Trie data structure to store and query popular prefixes, supporting continuous updates and processing of typed input. The application is built using Spring Boot, Apache Kafka, Spark, and HBase with Docker for containerization.
 
 ## Features
-- Real-Time Suggestions: Provides suggestions as users type, utilizing a WebSocket connection for low-latency responses.
+- Real-Time Suggestions: Provides suggestions as users type, utilizing a WebSocket connection for low-latency responses and Reactive/Multithreading programming.
 - Popular Prefix Aggregation: Updates the Trie every 24hrs based on the most popular prefixes in HBase, aggregating counts via Spark.
 - Scalable Architecture: Leverages microservices architecture with separate services for typeahead suggestions and stream processing.
 - Distributed Processing: Uses Kafka for message passing and Spark for processing typed input in micro-batches.
@@ -32,7 +32,7 @@ All components are containerized to simplify deployment and scaling.
 Supports running multiple instances of each service to handle increased load.
 
 ## Technologies Used
-- Spring/Spring Boot: Backend framework for building REST APIs and WebSockets.
+- Spring/Spring Boot: Backend framework for building REST APIs, Websockets and Reactive/Multithreading.
 - Apache Kafka: Message broker for reliable message passing.
 - Apache Spark: Stream processing for aggregating typed prefixes.
 - Trie Data Structure: Efficient data structure for prefix searching.
@@ -44,6 +44,6 @@ Supports running multiple instances of each service to handle increased load.
 ## License
 This project uses the following open-source libraries:
 
-- **Zipkin**: [Zipkin](https://zipkin.io/), which is licensed under the Apache License, Version 2.0. You can view the full license at [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
+- **Spring Boot**: Apache License 2.0 (Spring Boot): https://www.apache.org/licenses/LICENSE-2.0
 
 - **Spring Kafka**: Licensed under the [Apache License 2.0](https://github.com/spring-projects/spring-kafka/blob/main/LICENSE).

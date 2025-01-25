@@ -1,6 +1,5 @@
 package com.typeahead.trie_microservice.service;
 
-import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -9,57 +8,27 @@ import org.springframework.stereotype.Service;
 import com.typeahead.trie_microservice.exception.KafkaException;
 import com.typeahead.trie_microservice.infrastructure.KafkaProducerService;
 
-import io.micrometer.tracing.Span;
-import io.micrometer.tracing.Tracer;
 import reactor.core.publisher.Mono;
 
 @Service
 public class KafkaProducerServiceImpl implements KafkaProducerService {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
-    private final Tracer tracer;
     private static final Logger logger = LogManager.getLogger(KafkaProducerServiceImpl.class);
 
-    public KafkaProducerServiceImpl(KafkaTemplate<String, String> kafkaTemplate, Tracer tracer) {
+    public KafkaProducerServiceImpl(KafkaTemplate<String, String> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
-        this.tracer = tracer;
     }
 
     private Throwable handleKafkaException(Throwable throwable) {
         logger.error("Failed to send message to Kafka: {}", throwable.getMessage(), throwable);
-        return new RuntimeException("Kafka message sending failed", throwable);
-    }
-
-    private Mono<ProducerRecord<String, String>> createKafkaRecord(String prefix, Span currentSpan) {
-        ProducerRecord<String, String> record = new ProducerRecord<>(kafkaTemplate.getDefaultTopic(), prefix);
-
-        record.headers().add("trace-id", currentSpan.context().traceId().getBytes());
-        record.headers().add("span-id", currentSpan.context().spanId().getBytes());
-        record.headers().add("parent-span-id", currentSpan.context().parentId().getBytes());
-
-        return Mono.just(record);
+        return new KafkaException("Kafka message sending failed", throwable);
     }
 
     public Mono<Void> sendMessageToKafka(String prefix) {
-        Span span = tracer.nextSpan().name("kafka-producer").start();
-
-        return Mono.defer(() -> {
-            return Mono.justOrEmpty(tracer.currentSpan())
-                    .flatMap(currentSpan -> {
-                        if (currentSpan != null) {
-                            return createKafkaRecord(prefix, currentSpan)
-                                    .flatMap(record -> {
-                                        return Mono.fromRunnable(() -> kafkaTemplate.send(record));
-                                    });
-                        } else {
-                            logger.warn("No active trace context found, sending message without tracing.");
-                            return Mono.fromRunnable(() -> kafkaTemplate.sendDefault(prefix));
-                        }
-
-                    })
-                    .onErrorMap(KafkaException.class, this::handleKafkaException)
-                    .doOnTerminate(() -> span.end())
-                    .then();
-        });
+        return Mono.fromRunnable(() -> kafkaTemplate.sendDefault(prefix))
+                .onErrorMap(KafkaException.class, this::handleKafkaException)
+                .doOnTerminate(() -> logger.info("Message sent to Kafka: {} ", prefix))
+                .then();
     }
 }

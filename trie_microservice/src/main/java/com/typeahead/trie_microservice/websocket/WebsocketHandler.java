@@ -42,7 +42,6 @@ public class WebsocketHandler implements WebSocketHandler {
                 .flatMap(currentPrefix -> {
 
                     StringBuilder wordTyped = new StringBuilder();
-                    // TODO Revisit for Single Responsibility/Separation of Concerns (stripLeading)
                     return Mono.deferContextual(context -> websocketService.queryTrie(currentPrefix.stripLeading()))
                             .timeout(Duration.ofSeconds(3))
                             .contextWrite(Context.of("wordTyped", wordTyped))

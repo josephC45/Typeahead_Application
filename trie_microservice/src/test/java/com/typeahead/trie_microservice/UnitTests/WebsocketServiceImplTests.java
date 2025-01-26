@@ -1,4 +1,4 @@
-package com.typeahead.trie_microservice.websocket;
+package com.typeahead.trie_microservice.UnitTests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.lenient;
@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.typeahead.trie_microservice.domain.TrieService;
 import com.typeahead.trie_microservice.exception.KafkaException;
 import com.typeahead.trie_microservice.infrastructure.KafkaProducerService;
+import com.typeahead.trie_microservice.websocket.WebsocketServiceImpl;
 
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;

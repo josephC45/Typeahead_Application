@@ -1,4 +1,4 @@
-package com.typeahead.trie_microservice.service;
+package com.typeahead.trie_microservice.UnitTests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.typeahead.trie_microservice.domain.TrieInterface;
+import com.typeahead.trie_microservice.service.TrieServiceImpl;
 
 import reactor.core.publisher.Mono;
 

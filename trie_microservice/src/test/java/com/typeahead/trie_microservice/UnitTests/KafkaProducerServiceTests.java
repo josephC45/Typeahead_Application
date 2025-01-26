@@ -1,4 +1,4 @@
-package com.typeahead.trie_microservice.service;
+package com.typeahead.trie_microservice.UnitTests;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.kafka.core.KafkaTemplate;
 
 import com.typeahead.trie_microservice.exception.KafkaException;
+import com.typeahead.trie_microservice.service.KafkaProducerServiceImpl;
 
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;

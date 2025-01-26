@@ -1,4 +1,4 @@
-package com.typeahead.trie_microservice.domain;
+package com.typeahead.trie_microservice.UnitTests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.typeahead.trie_microservice.domain.TrieImpl;
 import com.typeahead.trie_microservice.exception.TrieException;
 
 import reactor.core.publisher.Mono;

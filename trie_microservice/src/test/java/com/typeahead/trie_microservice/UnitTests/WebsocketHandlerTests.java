@@ -26,14 +26,14 @@ import reactor.util.context.Context;
 @ExtendWith(MockitoExtension.class)
 public class WebsocketHandlerTests {
 
-    @Mock 
+    @Mock
     private WebsocketService websocketService;
 
     @InjectMocks
     private WebsocketHandler websocketHandler;
 
     @Test
-    void whenQueryTrieSucceeds_shouldSendResponseBackToSession(){
+    void whenQueryTrieSucceeds_shouldSendResponseBackToSession() {
         WebSocketSession session = mock(WebSocketSession.class);
         WebSocketMessage mockMessage = mock(WebSocketMessage.class);
 
@@ -42,23 +42,23 @@ public class WebsocketHandlerTests {
 
         when(session.textMessage("tester,testing")).thenReturn(mock(WebSocketMessage.class));
         when(session.send(any())).thenReturn(Mono.empty());
-        
+
         when(websocketService.queryTrie("t"))
-            .thenReturn(Mono.deferContextual(context -> {
-                StringBuilder wordTyped = context.get("wordTyped");
-                wordTyped.append("t");
-                return Mono.just("tester,testing");
-            }));
+                .thenReturn(Mono.deferContextual(context -> {
+                    StringBuilder wordTyped = context.get("wordTyped");
+                    wordTyped.append("t");
+                    return Mono.just("tester,testing");
+                }));
 
         Mono<Void> result = websocketHandler.handle(session)
-            .contextWrite(Context.of("wordTyped", new StringBuilder()));
+                .contextWrite(Context.of("wordTyped", new StringBuilder()));
 
         StepVerifier.create(result).verifyComplete();
         verify(session).send(any());
     }
 
     @Test
-    void whenQueryTrieSucceedsWithEndOfWord_shouldSendResponseBackToSession(){
+    void whenQueryTrieSucceedsWithEndOfWord_shouldSendResponseBackToSession() {
         WebSocketSession session = mock(WebSocketSession.class);
         WebSocketMessage mockMessage = mock(WebSocketMessage.class);
 
@@ -67,21 +67,21 @@ public class WebsocketHandlerTests {
 
         when(session.textMessage("Word sent to Kafka")).thenReturn(mock(WebSocketMessage.class));
         when(session.send(any())).thenReturn(Mono.empty());
-        
+
         when(websocketService.queryTrie(""))
-            .thenReturn(Mono.deferContextual(context -> {
-                return Mono.just("Word sent to Kafka");
-            }));
+                .thenReturn(Mono.deferContextual(context -> {
+                    return Mono.just("Word sent to Kafka");
+                }));
 
         Mono<Void> result = websocketHandler.handle(session)
-            .contextWrite(Context.of("wordTyped", new StringBuilder("test")));
+                .contextWrite(Context.of("wordTyped", new StringBuilder("test")));
 
         StepVerifier.create(result).verifyComplete();
         verify(session).send(any());
     }
 
     @Test
-    void whenQueryTrieTimesOut_shouldSendResponseBackToSession(){
+    void whenQueryTrieTimesOut_shouldSendResponseBackToSession() {
         WebSocketSession session = mock(WebSocketSession.class);
         WebSocketMessage mockMessage = mock(WebSocketMessage.class);
 
@@ -90,13 +90,13 @@ public class WebsocketHandlerTests {
 
         when(session.textMessage("Error: Query timed out.")).thenReturn(mock(WebSocketMessage.class));
         when(session.send(any())).thenReturn(Mono.empty());
-        
+
         when(websocketService.queryTrie("t"))
-            .thenReturn(Mono.delay(Duration.ofSeconds(4))
-            .then(Mono.just("")));
+                .thenReturn(Mono.delay(Duration.ofSeconds(4))
+                        .then(Mono.just("")));
 
         Mono<Void> result = websocketHandler.handle(session)
-            .contextWrite(Context.of("wordTyped", new StringBuilder()));
+                .contextWrite(Context.of("wordTyped", new StringBuilder()));
 
         StepVerifier.create(result).verifyComplete();
         verify(session).send(any());

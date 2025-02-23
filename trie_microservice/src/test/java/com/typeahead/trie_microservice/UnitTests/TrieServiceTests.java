@@ -13,7 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.typeahead.trie_microservice.domain.TrieInterface;
+import com.typeahead.trie_microservice.domain.Trie;
 import com.typeahead.trie_microservice.service.TrieServiceImpl;
 
 import reactor.core.publisher.Mono;
@@ -22,7 +22,7 @@ import reactor.core.publisher.Mono;
 public class TrieServiceTests {
 
     @Mock
-    private TrieInterface trieMock;
+    private Trie trieMock;
 
     @InjectMocks
     private TrieServiceImpl trieService;
@@ -34,7 +34,7 @@ public class TrieServiceTests {
 
         when(trieMock.getPrefixes(prefix)).thenReturn(expectedPrefixes);
 
-        Mono<List<String>> result = trieService.getPopularPrefixes(prefix);
+        Mono<List<String>> result = trieService.getPrefixes(prefix);
         assertEquals(expectedPrefixes, result);
         verify(trieMock).getPrefixes(prefix);
     }
@@ -42,7 +42,7 @@ public class TrieServiceTests {
     @Test
     public void givenPrefix_whenAddedToTrie_shouldCallAddPrefixOnTrie() {
         String prefix = "hello";
-        trieService.addCurrentPrefix(prefix);
+        trieService.addPrefix(prefix);
         verify(trieMock).addPrefix(prefix);
     }
 }

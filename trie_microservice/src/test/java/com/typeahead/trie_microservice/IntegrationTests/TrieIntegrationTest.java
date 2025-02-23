@@ -18,12 +18,12 @@ public class TrieIntegrationTest {
     @Test
     void givenPrefix_whenAdded_shouldReturnMatchingPrefixes() {
 
-        TrieImpl trie = new TrieImpl();
-        TrieServiceImpl trieService = new TrieServiceImpl(trie);
+        TrieImpl trieDataStructure = new TrieImpl();
+        TrieServiceImpl trieService = new TrieServiceImpl(trieDataStructure);
 
         String expected = "hello";
-        trieService.addCurrentPrefix(expected);
-        Mono<List<String>> actual = trieService.getPopularPrefixes(expected);
+        trieService.addPrefix(expected);
+        Mono<List<String>> actual = trieService.getPrefixes(expected);
 
         StepVerifier.create(actual)
                 .expectNextMatches(popularWordsList -> {

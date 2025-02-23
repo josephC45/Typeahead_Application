@@ -15,7 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.typeahead.trie_microservice.domain.TrieService;
+import com.typeahead.trie_microservice.domain.Trie;
 import com.typeahead.trie_microservice.exception.KafkaException;
 import com.typeahead.trie_microservice.infrastructure.KafkaProducerService;
 import com.typeahead.trie_microservice.websocket.WebsocketServiceImpl;
@@ -28,7 +28,7 @@ import reactor.util.context.Context;
 public class WebsocketServiceImplTests {
 
         @Mock
-        private TrieService trieService;
+        private Trie trieService;
 
         @Mock
         private KafkaProducerService kafkaService;
@@ -41,7 +41,7 @@ public class WebsocketServiceImplTests {
                 String currentPrefix = "a";
                 Mono<List<String>> mockPrefixes = Mono.just(Arrays.asList());
                 StringBuilder wordTyped = new StringBuilder();
-                when(trieService.getPopularPrefixes("a")).thenReturn(mockPrefixes);
+                when(trieService.getPrefixes("a")).thenReturn(mockPrefixes);
 
                 // Simulate typing "a"
                 StepVerifier.create(
@@ -51,7 +51,7 @@ public class WebsocketServiceImplTests {
                                 .verifyComplete();
 
                 assertEquals(1, wordTyped.length());
-                verify(trieService).getPopularPrefixes("a");
+                verify(trieService).getPrefixes("a");
         }
 
         @Test
@@ -59,7 +59,7 @@ public class WebsocketServiceImplTests {
                 String currentPrefix = "t";
                 Mono<List<String>> mockPrefixes = Mono.just(Arrays.asList("testing", "testosterone"));
                 StringBuilder wordTyped = new StringBuilder("tes");
-                lenient().when(trieService.getPopularPrefixes("test")).thenReturn(mockPrefixes);
+                lenient().when(trieService.getPrefixes("test")).thenReturn(mockPrefixes);
 
                 // Simulate typing final 't' in "test"
                 StepVerifier.create(
@@ -69,7 +69,7 @@ public class WebsocketServiceImplTests {
                                 .verifyComplete();
 
                 assertEquals(4, wordTyped.length());
-                verify(trieService).getPopularPrefixes("test");
+                verify(trieService).getPrefixes("test");
         }
 
         @Test

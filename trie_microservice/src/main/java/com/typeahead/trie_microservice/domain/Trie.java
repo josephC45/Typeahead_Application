@@ -4,7 +4,7 @@ import java.util.List;
 
 import reactor.core.publisher.Mono;
 
-public interface TrieInterface {
+public interface Trie {
 
     public Mono<List<String>> getPrefixes(String prefix);
 

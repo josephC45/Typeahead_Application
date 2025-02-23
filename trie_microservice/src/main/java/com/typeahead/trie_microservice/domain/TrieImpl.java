@@ -14,7 +14,7 @@ import com.typeahead.trie_microservice.exception.TrieException;
 import reactor.core.publisher.Mono;
 
 @Component
-public class TrieImpl implements TrieInterface {
+public class TrieImpl implements Trie {
 
     private final TrieNode rootNode;
     private static final Logger logger = LogManager.getLogger(TrieImpl.class);

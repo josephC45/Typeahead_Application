@@ -8,15 +8,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.socket.CloseStatus;
-import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.WebSocketMessage;
 import org.springframework.web.reactive.socket.WebSocketSession;
+import org.springframework.web.socket.handler.AbstractWebSocketHandler;
 
 import reactor.core.publisher.Mono;
 import reactor.util.context.Context;
 
 @Component
-public class WebsocketHandler implements WebSocketHandler {
+public class WebsocketHandler extends AbstractWebSocketHandler {
 
     private final WebsocketService websocketService;
     private static final Logger logger = LogManager.getLogger(WebsocketHandler.class);
@@ -35,7 +35,6 @@ public class WebsocketHandler implements WebSocketHandler {
         return session.close(CloseStatus.SERVER_ERROR);
     }
 
-    @Override
     public Mono<Void> handle(WebSocketSession session) {
         return session.receive()
                 .map(WebSocketMessage::getPayloadAsText)

@@ -3,12 +3,12 @@ package com.typeahead.trie_microservice.domain;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TrieNode {
+class TrieNode {
 
     private final Map<Character, TrieNode> children;
     private boolean isEndOfWord;
 
-    public TrieNode() {
+    TrieNode() {
         this.isEndOfWord = false;
         this.children = new HashMap<>();
     }

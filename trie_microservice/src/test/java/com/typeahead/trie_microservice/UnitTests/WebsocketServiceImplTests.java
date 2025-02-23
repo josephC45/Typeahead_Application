@@ -17,7 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.typeahead.trie_microservice.domain.Trie;
 import com.typeahead.trie_microservice.exception.KafkaException;
-import com.typeahead.trie_microservice.infrastructure.KafkaProducerService;
+import com.typeahead.trie_microservice.infrastructure.ConsumerService;
 import com.typeahead.trie_microservice.websocket.WebsocketServiceImpl;
 
 import reactor.core.publisher.Mono;
@@ -31,7 +31,7 @@ public class WebsocketServiceImplTests {
         private Trie trieService;
 
         @Mock
-        private KafkaProducerService kafkaService;
+        private ConsumerService kafkaService;
 
         @InjectMocks
         private WebsocketServiceImpl websocketService;
@@ -76,7 +76,7 @@ public class WebsocketServiceImplTests {
         void whenEndOfWordCharacterIsTyped_shouldSendWordToKafka() throws Exception {
                 String currentPrefix = "";
                 StringBuilder wordTyped = new StringBuilder("test");
-                when(kafkaService.sendMessageToKafka("test")).thenReturn(Mono.empty());
+                when(kafkaService.sendMessageToConsumer("test")).thenReturn(Mono.empty());
 
                 // Simulate typing " "
                 StepVerifier.create(
@@ -85,7 +85,7 @@ public class WebsocketServiceImplTests {
                                 .expectNext("Word sent to Kafka")
                                 .verifyComplete();
 
-                verify(kafkaService).sendMessageToKafka("test");
+                verify(kafkaService).sendMessageToConsumer("test");
                 assertEquals(0, wordTyped.length());
         }
 
@@ -93,7 +93,7 @@ public class WebsocketServiceImplTests {
         void whenSendMessageToKafkaThrowsKafkaException_shouldPropagateNotProcessedMessageToClient() {
                 String currentPrefix = "";
                 StringBuilder wordTyped = new StringBuilder("test");
-                when(kafkaService.sendMessageToKafka("test")).thenThrow(KafkaException.class);
+                when(kafkaService.sendMessageToConsumer("test")).thenThrow(KafkaException.class);
 
                 Mono<String> result = websocketService.queryTrie(currentPrefix)
                                 .contextWrite(Context.of("wordTyped", wordTyped));
@@ -102,7 +102,7 @@ public class WebsocketServiceImplTests {
                                 .expectNext("Word could not be processed...")
                                 .verifyComplete();
 
-                verify(kafkaService).sendMessageToKafka("test");
+                verify(kafkaService).sendMessageToConsumer("test");
         }
 
 }

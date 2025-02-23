@@ -12,26 +12,26 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.kafka.core.KafkaTemplate;
 
 import com.typeahead.trie_microservice.exception.KafkaException;
-import com.typeahead.trie_microservice.service.KafkaProducerServiceImpl;
+import com.typeahead.trie_microservice.service.KafkaConsumerServiceImpl;
 
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 @ExtendWith(MockitoExtension.class)
-public class KafkaProducerServiceTests {
+public class KafkaConsumerServiceTests {
 
     @Mock
     private KafkaTemplate<String, String> kafkaTemplateMock;
 
     @InjectMocks
-    private KafkaProducerServiceImpl kafkaService;
+    private KafkaConsumerServiceImpl kafkaService;
 
     @Test
     void whenSendMessageToKafkaCalled_shouldSendMessageSuccessfully() {
         String prefix = "test";
         when(kafkaTemplateMock.sendDefault(prefix)).thenReturn(null);
 
-        Mono<Void> result = kafkaService.sendMessageToKafka(prefix);
+        Mono<Void> result = kafkaService.sendMessageToConsumer(prefix);
 
         StepVerifier.create(result).verifyComplete();
 
@@ -43,7 +43,7 @@ public class KafkaProducerServiceTests {
         String prefix = "test";
         when(kafkaTemplateMock.sendDefault(prefix)).thenThrow(KafkaException.class);
 
-        Mono<Void> result = kafkaService.sendMessageToKafka(prefix);
+        Mono<Void> result = kafkaService.sendMessageToConsumer(prefix);
 
         StepVerifier.create(result)
                 .expectErrorMatches(throwable -> throwable instanceof KafkaException

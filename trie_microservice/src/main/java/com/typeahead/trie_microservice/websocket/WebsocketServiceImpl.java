@@ -2,9 +2,10 @@ package com.typeahead.trie_microservice.websocket;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.typeahead.trie_microservice.domain.TrieService;
+import com.typeahead.trie_microservice.domain.Trie;
 import com.typeahead.trie_microservice.exception.KafkaException;
 import com.typeahead.trie_microservice.infrastructure.KafkaProducerService;
 
@@ -13,12 +14,12 @@ import reactor.core.publisher.Mono;
 @Service
 public class WebsocketServiceImpl implements WebsocketService {
 
-    private final TrieService trieService;
+    private final Trie trie;
     private final KafkaProducerService kafkaService;
     private static final Logger logger = LogManager.getLogger(WebsocketServiceImpl.class);
 
-    public WebsocketServiceImpl(TrieService trieService, KafkaProducerService kafkaService) {
-        this.trieService = trieService;
+    public WebsocketServiceImpl(@Qualifier("trieServiceImpl") Trie trie, KafkaProducerService kafkaService) {
+        this.trie = trie;
         this.kafkaService = kafkaService;
     }
 
@@ -41,7 +42,7 @@ public class WebsocketServiceImpl implements WebsocketService {
                             wordTyped.append(currentPrefix);
                             String curWordTyped = wordTyped.toString();
 
-                            return trieService.getPopularPrefixes(curWordTyped)
+                            return trie.getPrefixes(curWordTyped)
                                     .map(popularWordsList -> {
                                         return (popularWordsList.isEmpty())
                                                 ? "No popular prefixes"

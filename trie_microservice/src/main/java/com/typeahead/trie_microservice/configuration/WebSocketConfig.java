@@ -1,27 +1,27 @@
 package com.typeahead.trie_microservice.configuration;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
+import org.springframework.web.socket.handler.AbstractWebSocketHandler;
 
 @Configuration
 @EnableWebSocket
-public class WebSocketConfig implements WebSocketConfigurer {
+class WebsocketConfig implements WebSocketConfigurer {
 
-    private final WebSocketHandler trieWebsocketHandler;
-    private final WebSocketProperties webSocketProperties;
+    private final AbstractWebSocketHandler websocketHandler;
+    private final WebsocketProperties websocketProperties;
 
-    public WebSocketConfig(WebSocketHandler trieWebsocketHandler, WebSocketProperties webSocketProperties) {
-        this.trieWebsocketHandler = trieWebsocketHandler;
-        this.webSocketProperties = webSocketProperties;
+    WebsocketConfig(AbstractWebSocketHandler websocketHandler, WebsocketProperties websocketProperties) {
+        this.websocketHandler = websocketHandler;
+        this.websocketProperties = websocketProperties;
     }
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(trieWebsocketHandler, webSocketProperties.getHandlerPath())
-                .setAllowedOrigins(webSocketProperties.getHandlerOrigins());
+        registry.addHandler(websocketHandler, websocketProperties.getHandlerPath())
+                .setAllowedOrigins(websocketProperties.getHandlerOrigins());
     }
 
 }

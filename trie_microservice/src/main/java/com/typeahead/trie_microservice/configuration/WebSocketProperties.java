@@ -5,24 +5,24 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ConfigurationProperties(prefix = "websockethandler")
-public class WebSocketProperties {
+class WebsocketProperties {
 
     private String handlerPath;
     private String handlerOrigins;
 
-    public String getHandlerPath() {
+    String getHandlerPath() {
         return handlerPath;
     }
 
-    public void setHandlerPath(String handlerPath) {
+    void setHandlerPath(String handlerPath) {
         this.handlerPath = handlerPath;
     }
 
-    public String getHandlerOrigins() {
+    String getHandlerOrigins() {
         return handlerOrigins;
     }
 
-    public void setHandlerOrigins(String handlerOrigins) {
+    void setHandlerOrigins(String handlerOrigins) {
         this.handlerOrigins = handlerOrigins;
     }
 
